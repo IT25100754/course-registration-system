@@ -1,1 +1,1 @@
-# Course Registration System . 
+# Course Registration
