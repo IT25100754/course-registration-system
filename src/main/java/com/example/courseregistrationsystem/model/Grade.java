@@ -3,6 +3,7 @@ package com.example.courseregistrationsystem.model;
 public class Grade {
     private int id;
     private String studentName;
+    private String gradeID;
 
 
     public Grade(){
@@ -23,5 +24,9 @@ public class Grade {
 
     public void setStudentName(String studentName) {
         this.studentName = studentName;
+    }
+
+    public String getGradeID() {
+        return gradeID;
     }
 }
