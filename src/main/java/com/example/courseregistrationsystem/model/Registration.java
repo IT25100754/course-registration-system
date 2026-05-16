@@ -22,7 +22,10 @@ public class Registration extends BaseEntity {
 
     // ---- Constructors ----
 
-    public Registration() {}
+    public Registration() {
+
+
+    }
 
     public Registration(String registrationID, String studentID,
                         String courseID, LocalDate registrationDate, String status) {
