@@ -64,7 +64,6 @@ public abstract class Payment extends BaseEntity {
     }
 
 
-    @Override
     public String getDetails() {
         return viewPaymentDetails();
     }
