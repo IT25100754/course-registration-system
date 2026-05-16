@@ -1,1 +1,2 @@
-S001|STU001|John Harvard|john@harvard.edu|password123|+1-617-495-1000|undergraduate|2026-05-15T15:10:18.894199|2026-05-15T15:10:18.894199
+e618b36e-a750-477f-8a7b-755db027eec4|Alex Johnson|alex@harvard.edu|pass123|HARVARD001|+1 234 567 8900|Harvard Faculty of Computing|2026-05-16T11:25:58.282181
+854befcc-5d2d-4c9d-8047-315085411383|Sarah Williams|sarah@harvard.edu|pass456|HARVARD002|+1 987 654 3210|Harvard Faculty of Computing|2026-05-16T11:25:58.282255
