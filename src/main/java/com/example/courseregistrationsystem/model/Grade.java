@@ -11,7 +11,6 @@ package com.example.courseregistrationsystem.model;
         private int    marks;
         private String grade;
 
-        public Grade() { super(); }
 
         public Grade(String id, String studentId, String courseId,
                      int marks, String grade, String createdAt) {
@@ -22,8 +21,12 @@ package com.example.courseregistrationsystem.model;
             this.grade     = grade;
         }
 
-        public String getStudentId()               { return studentId; }
-        public void   setStudentId(String s)       { this.studentId = s; }
+        public String getStudentId()               {
+            return studentId;
+        }
+        public void   setStudentId(String s)       {
+            this.studentId = s;
+        }
         public String getCourseId()                { return courseId; }
         public void   setCourseId(String c)        { this.courseId = c; }
         public int    getMarks()                   { return marks; }
@@ -32,8 +35,17 @@ package com.example.courseregistrationsystem.model;
         public void   setGrade(String g)           { this.grade = g; }
 
         @Override
+        public String getDetails() {
+            return "";
+        }
+
+        @Override
         public String toFileString() {
             return getId() + "|" + studentId + "|" + courseId + "|" + marks + "|" + grade + "|" + getCreatedAt();
+        }
+
+        private String getCreatedAt() {
+            return null;
         }
 
         public static com.example.courseregistrationsystem.model.Grade fromFileString(String line) {
