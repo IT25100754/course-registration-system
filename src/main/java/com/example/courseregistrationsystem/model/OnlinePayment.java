@@ -9,14 +9,12 @@ public class OnlinePayment extends Payment {
 
     // ---- Constructors ----
 
-    public OnlinePayment() {}
 
-    public OnlinePayment(String paymentID, String studentID, String registrationID,
-                         double amount, String paymentMethod, String paymentStatus) {
-        // Call parent constructor via super()
-        super(paymentID, studentID, registrationID, amount, paymentMethod, paymentStatus);
+
+    public OnlinePayment(String id, String createdAt, String paymentID, double amount, String paymentMethod, String paymentStatus) {
+        super(paymentID, studentID, registrationID, paymentMethod , studentID,registrationID,amount,paymentMethod,paymentStatus);
         // Auto-generate a transaction reference
-        this.transactionReference = "TXN-" + paymentID + "-" + System.currentTimeMillis();
+        this.transactionReference = transactionReference;
     }
 
 

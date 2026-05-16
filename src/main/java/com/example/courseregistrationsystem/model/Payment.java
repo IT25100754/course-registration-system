@@ -10,25 +10,25 @@ public abstract class Payment extends BaseEntity {
 
     // ---- ENCAPSULATION: private fields ----
     private String paymentID;
-    private String studentID;
+    protected String studentID;
     private String registrationID;
     private double amount;
     private String paymentMethod;
     private String paymentStatus;
 
-    // ---- Constructors ----
 
-    public Payment() {}
 
-    public Payment(String paymentID, String studentID, String registrationID,
-                   double amount, String paymentMethod, String paymentStatus) {
+
+
+    public Payment(String id, String createdAt, String paymentID, String studentID, String registrationID, String s, double amount, String paymentMethod, String paymentStatus) {
+        super(id ,createdAt);
         this.paymentID      = paymentID;
         this.studentID      = studentID;
         this.registrationID = registrationID;
         this.amount         = amount;
         this.paymentMethod  = paymentMethod;
         this.paymentStatus  = paymentStatus;
-        this.id             = paymentID; // BaseEntity.id
+
     }
 
     // ================================================================
@@ -101,7 +101,7 @@ public abstract class Payment extends BaseEntity {
     // ================================================================
 
     public String getPaymentID()                             { return paymentID; }
-    public void   setPaymentID(String paymentID)             { this.paymentID = paymentID; this.id = paymentID; }
+    public void   setPaymentID(String paymentID)             { this.paymentID = paymentID; this.paymentID = paymentID; }
 
     public String getStudentID()                             { return studentID; }
     public void   setStudentID(String studentID)             { this.studentID = studentID; }
