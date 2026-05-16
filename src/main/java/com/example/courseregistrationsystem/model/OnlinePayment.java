@@ -1,31 +1,34 @@
 package com.example.courseregistrationsystem.model;
 
-
+import java.util.UUID;
 
 public class OnlinePayment extends Payment {
 
-    // Extra field specific to online payments
     private String transactionReference;
 
-    // ---- Constructors ----
+    // ---- Constructor ----
 
+    public OnlinePayment(String paymentID,
+                         String studentID,
+                         String registrationID,
+                         double amount,
+                         String paymentMethod,
+                         String paymentStatus) {
 
+        super(paymentID, null, paymentID,
+                studentID, registrationID,
+                null, amount, paymentMethod, paymentStatus);
 
-    public OnlinePayment(String id, String createdAt, String paymentID, double amount, String paymentMethod, String paymentStatus) {
-        super(paymentID, studentID, registrationID, paymentMethod , studentID,registrationID,amount,paymentMethod,paymentStatus);
-        // Auto-generate a transaction reference
-        this.transactionReference = transactionReference;
+        // generate transaction reference safely
+        this.transactionReference = UUID.randomUUID().toString();
     }
-
 
     @Override
     public boolean processPayment() {
-        // Simulate online payment gateway processing
         this.setPaymentStatus(STATUS_COMPLETED);
         System.out.println("Online payment processed. Ref: " + transactionReference);
         return true;
     }
-
 
     @Override
     public String generateReceipt() {
@@ -33,6 +36,13 @@ public class OnlinePayment extends Payment {
                 "\n  Transaction Ref: " + transactionReference;
     }
 
-    public String getTransactionReference()                        { return transactionReference; }
-    public void   setTransactionReference(String transactionRef)   { this.transactionReference = transactionRef; }
+    // ---- Getter / Setter ----
+
+    public String getTransactionReference() {
+        return transactionReference;
+    }
+
+    public void setTransactionReference(String transactionReference) {
+        this.transactionReference = transactionReference;
+    }
 }
