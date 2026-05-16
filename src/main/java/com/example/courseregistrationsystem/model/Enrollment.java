@@ -1,5 +1,7 @@
 package com.example.courseregistrationsystem.model;
 
+
+
 /**
  * OOP: INHERITANCE - both Enrollment and Grade extend BaseEntity.
  *      POLYMORPHISM - each gives its own toFileString() body.
@@ -11,10 +13,10 @@ public class Enrollment extends BaseEntity {
     private String courseId;
     private String enrolledDate;
 
-    public Enrollment() { super(); }
+    public Enrollment(String id, String createdAt) {
+        super(id , createdAt); }
 
-    public Enrollment(String id, String studentId, String courseId,
-                      String enrolledDate, String createdAt) {
+    public Enrollment(String id, String studentId, String courseId, String enrolledDate, String createdAt) {
         super(id, createdAt);
         this.studentId    = studentId;
         this.courseId     = courseId;
@@ -33,10 +35,21 @@ public class Enrollment extends BaseEntity {
         return getId() + "|" + studentId + "|" + courseId + "|" + enrolledDate + "|" + getCreatedAt();
     }
 
+    private String getCreatedAt() {
+        return null;
+    }
+
+    private String getId() {
+        return studentId;
+    }
+
     public static Enrollment fromFileString(String line) {
         String[] p = line.split("\\|", -1);
         if (p.length < 5) return null;
         return new Enrollment(p[0], p[1], p[2], p[3], p[4]);
     }
 }
+
+
+
 
