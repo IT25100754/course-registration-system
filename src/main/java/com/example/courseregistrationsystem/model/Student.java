@@ -13,13 +13,13 @@ public class Student extends BaseEntity {
     private String studentId;
     private String phone;
     private String faculty;
+    private String department;
 
     public Student() {
         super();
     }
 
-    public Student(String id, String name, String email, String password,
-                   String studentId, String phone, String faculty, String createdAt) {
+    public Student(String id, String name, String email, String password, String studentId, String phone, String faculty, String createdAt) {
         super(id, createdAt);
         this.name = name;
         this.email = email;
@@ -108,5 +108,13 @@ public class Student extends BaseEntity {
                 p[0], p[1], p[2], p[3],
                 p[4], p[5], p[6], p[7]
         );
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
     }
 }

@@ -1,36 +1,63 @@
 package com.example.courseregistrationsystem.model;
 
-public class Grade  {
+public class Grade {
 
-    private int id;
-    private int studentId;
-    private String subject;
+    private String id;
+    private String studentId;
+    private String courseId;
+    private int marks;
     private String grade;
+    private String subject;
 
     public Grade() {
     }
 
-    public Grade(int id, int studentId, String subject, String grade) {
+    public Grade(String id, String studentId, String courseId, int marks, String grade) {
         this.id = id;
         this.studentId = studentId;
-        this.subject = subject;
+        this.courseId = courseId;
+        this.marks = marks;
         this.grade = grade;
     }
 
-    public int getId() {
+    // IMPORTANT METHOD
+    public static Grade fromFileString(
+            String line) {
+
+        try {
+
+            String[] data = line.split(",");
+
+            return new Grade(data[0], data[1], data[2], Integer.parseInt(data[3]), data[4]);
+
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public String toFileString() {
+
+        return id + "," + studentId + "," + courseId + "," + marks + "," + grade;
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getStudentId() {
+    public String getStudentId() {
         return studentId;
     }
 
-    public void setStudentId(int studentId) {
-        this.studentId = studentId;
+    public String getCourseId() {
+        return courseId;
+    }
+
+    public int getMarks() {
+        return marks;
+    }
+
+    public String getGrade() {
+        return grade;
     }
 
     public String getSubject() {
@@ -39,13 +66,5 @@ public class Grade  {
 
     public void setSubject(String subject) {
         this.subject = subject;
-    }
-
-    public String getGrade() {
-        return grade;
-    }
-
-    public void setGrade(String grade) {
-        this.grade = grade;
     }
 }

@@ -1,100 +1,91 @@
 package com.example.courseregistrationsystem.model;
 
-public class Course extends BaseEntity {
+public class Course {
 
+    private String id;
+    private String courseName;
+    private double fee;
+    private String credits;
+    private String lecturer;
     private String name;
     private String code;
-    private int credits;
-    private String instructor;
 
-    //  ADD THIS (needed by CourseService)
-    private int availableSeats;
-
-    public Course() {
-        super();
+    public Course(String datum, String s, String string, int i, String datum1, String s1) {
     }
 
-    public Course(String id, String name, String code, int credits,
-                  String instructor, String createdAt) {
-        super(id, createdAt);
-        this.name = name;
-        this.code = code;
-        this.credits = credits;
-        this.instructor = instructor;
+    public Course(String id, String courseName, double fee , String credits,String lecturer) {
+        this.id = id;
+        this.courseName = courseName;
+        this.fee = fee;
+        this.credits=credits;
+        this.lecturer=lecturer;
     }
 
-    // ===== EXISTING GETTERS =====
+    public static Course fromFileString(
+            String line) {
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+        try {
 
-    public String getCode() { return code; }
-    public void setCode(String code) { this.code = code; }
+            String[] data = line.split(",");
 
-    public int getCredits() { return credits; }
-    public void setCredits(int credits) { this.credits = credits; }
+            return new Course(data[0], data[1], data[2], Integer.parseInt(data[3]), data[4], data[5]);
 
-    public String getInstructor() { return instructor; }
-    public void setInstructor(String instructor) { this.instructor = instructor; }
+        } catch (Exception e) {
 
-    // ===== ADD COMPATIBILITY METHODS (FOR SERVICE) =====
-
-    public String getCourseID() {
-        return getId();
-    }
-
-    public void setCourseID(String id) {
-        setId(id);
-    }
-
-    public String getCourseName() {
-        return name;
-    }
-
-    // ===== SEAT MANAGEMENT (REQUIRED BY SERVICE) =====
-
-    public int getAvailableSeats() {
-        return availableSeats;
-    }
-
-    public void setAvailableSeats(int availableSeats) {
-        this.availableSeats = availableSeats;
-    }
-
-    public boolean hasAvailableSeats() {
-        return availableSeats > 0;
-    }
-
-    public void decreaseSeat() {
-        if (availableSeats > 0) {
-            availableSeats--;
+            return null;
         }
     }
 
-    public void increaseSeat() {
-        availableSeats++;
-    }
-
-    // ===== FILE STORAGE =====
-
-    @Override
     public String toFileString() {
-        return getId() + "|" + name + "|" + code + "|" + credits + "|" +
-                instructor + "|" + availableSeats + "|" + getCreatedAt();
+
+        return id + "," + courseName + "," + fee + "," + credits + "," + lecturer + "," ;
     }
 
-    public static Course fromFileString(String line) {
-        String[] p = line.split("\\|", -1);
-        if (p.length < 7) return null;
+    public String getId() {
+        return id;
+    }
 
-        Course c = new Course(
-                p[0], p[1], p[2],
-                Integer.parseInt(p[3]),
-                p[4],
-                p[6]
-        );
+    public void setId(String id) {
+        this.id = id;
+    }
 
-        c.setAvailableSeats(Integer.parseInt(p[5]));
-        return c;
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
+
+    public double getFee() {
+        return fee;
+    }
+
+    public void setFee(double fee) {
+        this.fee = fee;
+    }
+
+    public int getCredits() {
+        return 0;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getCourseID() {
+        return null;
     }
 }
