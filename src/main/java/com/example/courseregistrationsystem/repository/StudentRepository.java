@@ -13,7 +13,7 @@ import java.util.Optional;
 public class StudentRepository {
 
     @Autowired
-    private FileHandler fileHandler;
+    private com.example.courseregistrationsystem.repository.FileHandler fileHandler;
 
     // ================================================================
     //  CREATE - Save a new student to students.txt

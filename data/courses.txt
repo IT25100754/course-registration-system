@@ -1,3 +1,0 @@
-C101|Data Structures|CS201|4|Dr. Smith|0|2026-05-16T14:05:36.352434
-C102|Database Systems|CS301|3|Dr. Johnson|0|2026-05-16T14:05:36.352434
-C103|Web Development|CS401|3|Prof. Brown|0|2026-05-16T14:05:36.352434

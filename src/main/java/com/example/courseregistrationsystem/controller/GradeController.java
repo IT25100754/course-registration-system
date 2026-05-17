@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/admin/enrollments")
-public class AdminGradeController {
+public class GradeController {
 
     @Autowired
     private GradeService gradeService;

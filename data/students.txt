@@ -1,2 +1,0 @@
-c54ea16f-c358-4bad-9dba-9aca87c6e62b|Alex Johnson|alex@harvard.edu|pass123|HARVARD001|+1 234 567 8900|Harvard Faculty of Computing|2026-05-16T14:03:44.740166
-c6ee1432-7195-4c65-ba63-397974e9059b|Sarah Williams|sarah@harvard.edu|pass456|HARVARD002|+1 987 654 3210|Harvard Faculty of Computing|2026-05-16T14:03:44.74023

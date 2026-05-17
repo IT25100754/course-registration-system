@@ -7,7 +7,7 @@ public class Course extends BaseEntity {
     private int credits;
     private String instructor;
 
-    // ✅ ADD THIS (needed by CourseService)
+    //  ADD THIS (needed by CourseService)
     private int availableSeats;
 
     public Course() {

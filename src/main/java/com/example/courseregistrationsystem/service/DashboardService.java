@@ -87,10 +87,8 @@ public class DashboardService {
         if (loadEnrollments().isEmpty()) {
             String ts = now();
             List<String> enrollLines = Arrays.asList(
-                    new Enrollment(UUID.randomUUID().toString(), "HARVARD001", "C101", "2024-01-15", ts).toFileString(),
-                    new Enrollment(UUID.randomUUID().toString(), "HARVARD001", "C102", "2024-01-15", ts).toFileString()
             );
-            fileStorage.writeLines(ENROLLMENTS_FILE, enrollLines);
+            fileStorage.writeLines(ENROLLMENTS_FILE, Collections.singletonList(enrollLines));
         }
 
         if (loadGrades().isEmpty()) {
@@ -99,7 +97,7 @@ public class DashboardService {
                     new Grade(UUID.randomUUID().toString(), "HARVARD001", "C101", 88, "B+", ts).toFileString(),
                     new Grade(UUID.randomUUID().toString(), "HARVARD001", "C102", 92, "A-", ts).toFileString()
             );
-            fileStorage.writeLines(GRADES_FILE, gradeLines);
+            fileStorage.writeLines(GRADES_FILE, Collections.singletonList(gradeLines));
         }
     }
 
@@ -240,4 +238,3 @@ public class DashboardService {
         return loadCourses();
     }
 }
-

@@ -1,6 +1,7 @@
 package com.example.courseregistrationsystem.service;
 
-import com.example.courseregistrationsystem.model.Enrollment;
+import com.example.courseregistrationsystem.model.Grade;
+import com.example.courseregistrationsystem.repository.GradeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,31 +11,22 @@ import java.util.List;
 public class GradeService {
 
     @Autowired
-    private EnrollmentRepository enrollmentRepository;
+    private FileStorageService fileStorageService;
+    @Autowired
+    private GradeRepository gradeRepository;
 
-    public Enrollment updateGrade(Enrollment gradeRequest) {
-        List<Enrollment> enrollments = enrollmentRepository.readEnrollments();
-        boolean isUpdated = false;
-        Enrollment updatedRecord = null;
+    public void addGrade(Grade grade) {
+        gradeRepository.save(grade);
+    }
 
-        for (Enrollment enrollment : enrollments) {
-            if (enrollment.getStudentId().equals(gradeRequest.getStudentId()) &&
-                    enrollment.getCourseCode().equals(gradeRequest.getCourseCode())) {
+    public List<Grade> getAllGrades() {
+        return gradeRepository.findAll();
+    }
 
+    public void saveGrade(Grade grade) {
 
-                enrollment.setGrade(gradeRequest.getGrade());
-                updatedRecord = enrollment;
-                isUpdated = true;
-                break; // Stop searching once found
-            }
-        }
+        String data = grade.getId() + "," + grade.getStudentId() + "," + grade.getSubject() + "," + grade.getGrade();
 
-        if (isUpdated) {
-            enrollmentRepository.writeEnrollments(enrollments);
-            return updatedRecord;
-        }
-
-
-        return null;
+        fileStorageService.writeToFile("data/grades.txt", data);
     }
 }

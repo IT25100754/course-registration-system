@@ -3,107 +3,59 @@ package com.example.courseregistrationsystem.service;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-    /**
-     * OOP: ABSTRACTION   - Hides all file I/O (BufferedReader, PrintWriter, Paths)
-     *                      behind simple readLines() / writeLines() / appendLine() methods.
-     *      ENCAPSULATION  - The DATA_DIR constant and internal helpers are private.
-     *      INFORMATION HIDING - Callers (other services) never touch java.io directly.
-     *
-     * Storage format: plain .txt files, one record per line, pipe-delimited.
-     * Files are stored in  data/  directory at project root (auto-created).
-     */
-    @Service
-    public class FileStorageService {
+@Service
+public class FileStorageService {
 
-        // OOP: ENCAPSULATION - storage root is a hidden implementation detail
-        private static final String DATA_DIR = "data";
+    public void writeToFile(String fileName, String data) {
 
-        public FileStorageService() {
-            // Ensure the data directory exists on startup
-            ensureDirectoryExists();
+        try {
+
+            FileWriter writer = new FileWriter(fileName, true);
+            writer.write(data + "\n");
+            writer.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+    }
 
-        // ── Private helpers (INFORMATION HIDING) ──────────────────────────────────
+    public List<String> readFromFile(String fileName) {
+        List<String> lines = new ArrayList<>();
+        File file = new File(fileName);
 
-        private void ensureDirectoryExists() {
-            File dir = new File(DATA_DIR);
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
-        }
-
-        private Path resolvePath(String filename) {
-            return Paths.get(DATA_DIR, filename);
-        }
-
-        // ── Public API (ABSTRACTION) ───────────────────────────────────────────────
-
-        /**
-         * Reads every non-blank line from the given file.
-         * Creates the file automatically if it does not exist.
-         */
-        public List<String> readLines(String filename) {
-            List<String> lines = new ArrayList<>();
-            Path path = resolvePath(filename);
+        // Check if file exists, if not, return empty list instead of crashing
+        if (!file.exists()) {
+            System.out.println("File not found: " + fileName + ". Creating empty file...");
             try {
-                if (!Files.exists(path)) {
-                    Files.createFile(path);
-                }
-                try (BufferedReader reader = new BufferedReader(new FileReader(path.toFile()))) {
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        if (!line.trim().isEmpty()) {
-                            lines.add(line.trim());
-                        }
-                    }
-                }
+                file.getParentFile().mkdirs(); // Create the 'data' folder if it doesn't exist
+                file.createNewFile();          // Create the 'users.txt' file
             } catch (IOException e) {
-                System.err.println("[FileStorageService] Error reading " + filename + ": " + e.getMessage());
+                e.printStackTrace();
             }
             return lines;
         }
 
-        /**
-         * Overwrites the entire file with the provided list of lines.
-         * Used for update / delete operations.
-         */
-        public boolean writeLines(String filename, List<String> lines) {
-            Path path = resolvePath(filename);
-            try {
-                try (PrintWriter writer = new PrintWriter(new FileWriter(path.toFile(), false))) {
-                    for (String line : lines) {
-                        writer.println(line);
-                    }
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (!line.trim().isEmpty()) {
+                    lines.add(line);
                 }
-                return true;
-            } catch (IOException e) {
-                System.err.println("[FileStorageService] Error writing " + filename + ": " + e.getMessage());
-                return false;
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        /**
-         * Appends a single line to the end of a file.
-         * Used for create (insert) operations.
-         */
-        public boolean appendLine(String filename, String line) {
-            Path path = resolvePath(filename);
-            try {
-                if (!Files.exists(path)) {
-                    Files.createFile(path);
-                }
-                try (PrintWriter writer = new PrintWriter(new FileWriter(path.toFile(), true))) {
-                    writer.println(line);
-                }
-                return true;
-            } catch (IOException e) {
-                System.err.println("[FileStorageService] Error appending to " + filename + ": " + e.getMessage());
-                return false;
-            }
-        }
+        return lines;
     }
 
+    public Optional<Object> readLines(String studentsFile) {
+        return null;
+    }
+
+    public void writeLines(String studentsFile, List<String> lines) {
+    }
+}
