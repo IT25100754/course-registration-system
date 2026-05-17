@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
         private List<Student> loadAll() {
             return fileStorage.readLines(STUDENTS_FILE)
                     .stream()
-                    .map(Student::fromFileString)
+                    .map(line -> Student.fromFileString((String) line))
                     .filter(s -> s != null)
                     .collect(Collectors.toList());
         }

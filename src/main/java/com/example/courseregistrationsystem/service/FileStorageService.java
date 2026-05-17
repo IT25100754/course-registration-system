@@ -58,4 +58,7 @@ public class FileStorageService {
 
     public void writeLines(String studentsFile, List<String> lines) {
     }
+
+    public void appendLine(String studentsFile, String fileString) {
+    }
 }
