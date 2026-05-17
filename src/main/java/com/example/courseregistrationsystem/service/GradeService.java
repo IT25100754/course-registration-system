@@ -1,5 +1,6 @@
 package com.example.courseregistrationsystem.service;
 
+import com.example.courseregistrationsystem.model.Enrollment;
 import com.example.courseregistrationsystem.model.Grade;
 import com.example.courseregistrationsystem.repository.GradeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,5 +29,9 @@ public class GradeService {
         String data = grade.getId() + "," + grade.getStudentId() + "," + grade.getSubject() + "," + grade.getGrade();
 
         fileStorageService.writeToFile("data/grades.txt", data);
+    }
+
+    public Enrollment updateGrade(Enrollment gradeRequest) {
+        return gradeRequest;
     }
 }

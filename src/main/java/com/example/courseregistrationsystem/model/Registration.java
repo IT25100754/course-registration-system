@@ -14,6 +14,8 @@ public class Registration extends BaseEntity {
             DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     // ---- ENCAPSULATION ----
+    private String studentId;
+    private String courseId;
     private String registrationID;
     private String studentID;
     private String courseID;
@@ -144,5 +146,21 @@ public class Registration extends BaseEntity {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(String studentId) {
+        this.studentId = studentId;
+    }
+
+    public String getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
     }
 }

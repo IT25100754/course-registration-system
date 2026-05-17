@@ -1,57 +1,64 @@
 package com.example.courseregistrationsystem.model;
 
 public class Enrollment {
-    private String studentId;
-    private String courseCode;
-    private String grade;
-    private String id;
-    private String studentName;
-    private int marks;
-    private String semester;
-    private String year;
 
+    private String id;
+    private String studentId;
+    private String courseId;
+    private String enrolledDate;
+    private String createdAt;
 
     public Enrollment(String trim, String trimmed, int i) {
-
     }
 
-    public Enrollment(String studentId, String courseCode, String grade, String s, String ts) {
+    public Enrollment(String id,
+                      String studentId,
+                      String courseId,
+                      String enrolledDate,
+                      String createdAt) {
+
+        this.id = id;
         this.studentId = studentId;
-        this.courseCode = courseCode;
-        this.grade = grade;
+        this.courseId = courseId;
+        this.enrolledDate = enrolledDate;
+        this.createdAt = createdAt;
     }
 
-    // Getters and Setters
+    public static Enrollment fromFileString(
+            String line) {
+
+        try {
+
+            String[] data = line.split(",");
+
+            return new Enrollment(
+                    data[0],
+                    data[1],
+                    data[2],
+                    data[3],
+                    data[4]
+            );
+
+        } catch (Exception e) {
+
+            return null;
+        }
+    }
+
+    public String toFileString() {
+
+        return id + "," +
+                studentId + "," +
+                courseId + "," +
+                enrolledDate + "," +
+                createdAt;
+    }
+
     public String getStudentId() {
         return studentId;
     }
-    public void setStudentId(String studentId) {
-        this.studentId = studentId;
-    }
 
-    public String getCourseCode() {
-        return courseCode;
-    }
-    public void setCourseCode(String courseCode) {
-        this.courseCode = courseCode;
-    }
-
-    public String getGrade() {
-        return grade;
-    }
-    public void setGrade(String grade) {
-        this.grade = grade;
-    }
-
-    public static Object fromFileString(String s) {
-        return s;
-    }
-
-    public Object toFileString() {
-        return null;
-    }
-
-    public Object getCourseId() {
-        return id;
+    public String getCourseId() {
+        return courseId;
     }
 }

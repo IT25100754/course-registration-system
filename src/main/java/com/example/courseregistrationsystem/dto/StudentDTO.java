@@ -1,13 +1,6 @@
-package com.example.courseregistrationsystem.model;
+package com.example.courseregistrationsystem.dto;
 
 
-    /**
-     * OOP: INFORMATION HIDING - Separate DTO classes ensure the password field of
-     *      Student is NEVER accidentally serialised into an HTTP response.
-     *
-     *      ENCAPSULATION   - Every DTO keeps its fields private with getters/setters.
-     *      ABSTRACTION     - Controllers work with clean DTOs, not raw file strings.
-     */
     public class StudentDTO {
 
         // ══════════════════════════════════════════════════════════════════════════

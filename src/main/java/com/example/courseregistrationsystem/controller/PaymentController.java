@@ -13,8 +13,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 import java.util.Optional;
 
-@Controller
-@RequestMapping("/payments")
+@RestController
+@RequestMapping("/api/payments")
 public class PaymentController {
 
     @Autowired

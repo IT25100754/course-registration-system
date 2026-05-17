@@ -3,7 +3,7 @@ package com.example.courseregistrationsystem.controller;
 
 import com.example.courseregistrationsystem.model.Course;
 import com.example.courseregistrationsystem.model.Grade;
-import com.example.courseregistrationsystem.model.StudentDTO;
+import com.example.courseregistrationsystem.dto.StudentDTO;
 import com.example.courseregistrationsystem.service.DashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -59,7 +59,7 @@ public class DashboardController {
     public ResponseEntity<List<Grade>> getGrades(
             @PathVariable String studentId) {
 
-        List<Grade> grades = dashboardService.getGrades(studentId);
+        List<Grade> grades = dashboardService.getClass(studentId);
         return ResponseEntity.ok(grades);
     }
 
