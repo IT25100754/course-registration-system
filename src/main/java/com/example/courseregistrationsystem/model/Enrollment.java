@@ -1,14 +1,17 @@
 package com.example.courseregistrationsystem.model;
 
-public class Enrollment {
+public class Enrollment extends BaseEntity {
 
-    private String id;
     private String studentId;
     private String courseId;
     private String enrolledDate;
-    private String createdAt;
 
-    public Enrollment(String trim, String trimmed, int i) {
+    public Enrollment() {
+        super();
+    }
+    public Enrollment(String id, String studentId, int courseId) {
+        this.studentId = studentId;
+        this.courseId = String.valueOf(courseId);
     }
 
     public Enrollment(String id,
@@ -17,19 +20,18 @@ public class Enrollment {
                       String enrolledDate,
                       String createdAt) {
 
-        this.id = id;
+        super.setId(id);
+        super.setCreatedAt(createdAt);
+
         this.studentId = studentId;
         this.courseId = courseId;
         this.enrolledDate = enrolledDate;
-        this.createdAt = createdAt;
     }
 
-    public static Enrollment fromFileString(
-            String line) {
+    public static Enrollment fromFileString(String line) {
 
         try {
-
-            String[] data = line.split(",");
+            String[] data = line.split("\\|", -1);
 
             return new Enrollment(
                     data[0],
@@ -40,25 +42,39 @@ public class Enrollment {
             );
 
         } catch (Exception e) {
-
             return null;
         }
     }
 
     public String toFileString() {
-
-        return id + "," +
-                studentId + "," +
-                courseId + "," +
-                enrolledDate + "," +
-                createdAt;
+        return getId() + "|" +
+                studentId + "|" +
+                courseId + "|" +
+                enrolledDate + "|" +
+                getCreatedAt();
     }
 
     public String getStudentId() {
         return studentId;
     }
 
+    public void setStudentId(String studentId) {
+        this.studentId = studentId;
+    }
+
     public String getCourseId() {
         return courseId;
+    }
+
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
+    }
+
+    public String getEnrolledDate() {
+        return enrolledDate;
+    }
+
+    public void setEnrolledDate(String enrolledDate) {
+        this.enrolledDate = enrolledDate;
     }
 }

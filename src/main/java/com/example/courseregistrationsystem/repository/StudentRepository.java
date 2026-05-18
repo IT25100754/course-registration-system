@@ -48,7 +48,7 @@ public class StudentRepository {
 
     public Optional<Student> findById(String studentID) {
         return findAll().stream()
-                .filter(s -> s.getStudentID().equalsIgnoreCase(studentID))
+                .filter(s -> s.getStudentId().equalsIgnoreCase(studentID))
                 .findFirst();
     }
 
@@ -69,7 +69,7 @@ public class StudentRepository {
 
         List<String> updatedLines = new ArrayList<>();
         for (Student s : all) {
-            if (s.getStudentID().equals(updatedStudent.getStudentID())) {
+            if (s.getStudentId().equals(updatedStudent.getStudentId())) {
                 updatedLines.add(updatedStudent.toFileString()); // replace with updated
                 found = true;
             } else {
@@ -94,7 +94,7 @@ public class StudentRepository {
 
         List<String> remaining = new ArrayList<>();
         for (Student s : all) {
-            if (!s.getStudentID().equals(studentID)) {
+            if (!s.getStudentId().equals(studentID)) {
                 remaining.add(s.toFileString());
             }
         }
@@ -114,7 +114,7 @@ public class StudentRepository {
         int maxNum = 0;
         for (Student s : all) {
             try {
-                int num = Integer.parseInt(s.getStudentID().replaceAll("[^0-9]", ""));
+                int num = Integer.parseInt(s.getStudentId().replaceAll("[^0-9]", ""));
                 if (num > maxNum) maxNum = num;
             } catch (NumberFormatException ignored) {}
         }
