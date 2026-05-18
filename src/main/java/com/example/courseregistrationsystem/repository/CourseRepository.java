@@ -57,10 +57,11 @@ public class CourseRepository {
     }
 
     public void add(Course course) {
-        
+        System.out.println("add course ");
     }
 
     public void deleteById(String id) {
+        System.out.println("delete course");
     }
 
     public List<Course> findAll() {
@@ -68,5 +69,6 @@ public class CourseRepository {
     }
 
     public void update(Course updated) {
+        System.out.println("update course");
     }
 }

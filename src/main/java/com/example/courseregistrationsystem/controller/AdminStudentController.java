@@ -26,7 +26,15 @@ public class AdminStudentController {
 
     private boolean isAdmin(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        return session != null && "ADMIN".equals(session.getAttribute("role"));
+
+        if (session != null) {
+            Object role = session.getAttribute("role");
+            System.out.println("Session ID: " + session.getId() + " | Role: " + role);
+            return "ADMIN".equals(role);
+        }
+
+        System.out.println("No session found for this request.");
+        return false;
     }
 
     @GetMapping

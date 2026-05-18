@@ -6,7 +6,7 @@ package com.example.courseregistrationsystem.model;
  *      INFO HIDING    - Password should not be exposed to frontend.
  */
 public class Student extends BaseEntity {
-
+    private String studentID;
     private String name;
     private String email;
     private String password;
@@ -121,5 +121,13 @@ public class Student extends BaseEntity {
                 p[7], // department
                 p[8]  // createdAt
         );
+    }
+
+    public String getStudentID() {
+        return studentID;
+    }
+
+    public void setStudentID(String studentID) {
+        this.studentID = studentID;
     }
 }

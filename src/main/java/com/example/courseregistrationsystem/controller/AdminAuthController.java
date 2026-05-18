@@ -6,55 +6,80 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/admin")
+@CrossOrigin(origins = "http://127.0.0.1:5500", allowCredentials = "true")
 public class AdminAuthController {
 
-
-    private final AdminAuthService adminAuthService;
-
-    public AdminAuthController(AdminAuthService adminAuthService) {
-        this.adminAuthService = adminAuthService;
-    }
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest request, HttpServletRequest httpRequest) {
-        System.out.println("Request:"+ request.getUsername() + ", "+request.getPassword() );
-        boolean isValidUser = adminAuthService.authenticate(request.username, request.password);
-        if (isValidUser) {
-            // HOW SESSIONS WORK: Create a session (or get existing one)
+
+        String user = request.getUsername();
+        String pass = request.getPassword();
+
+        System.out.println("Login Attempt: " + user + " / " + pass);
+
+        // HARDCODED CHECK
+        if ("admin@harvard.edu".equals(user) && "admin123".equals(pass)) {
             HttpSession session = httpRequest.getSession(true);
-
-            // Save admin identity inside the server's memory for this specific user
             session.setAttribute("role", "ADMIN");
-            session.setAttribute("username", request.username);
-
             return ResponseEntity.ok("Login successful");
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
         }
     }
 
-    // 3. LOGOUT ENDPOINT
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpServletRequest httpRequest) {
-        HttpSession session = httpRequest.getSession(false); // Get session, don't create a new one
-        if (session != null) {
-            session.invalidate(); // Destroy the session!
-        }
-        return ResponseEntity.ok("Logged out successfully");
+        HttpSession session = httpRequest.getSession(false);
+        if (session != null) session.invalidate();
+        return ResponseEntity.ok("Logged out");
     }
-
-    public boolean authenticate(String username, String password) {
-        // Hardcoded check or check from a file
-        return "admin@harvard.edu".equals(username) && "admin123".equals(password);
-    }
-
-
-
 }
+
+
+//    private final AdminAuthService adminAuthService;
+//
+//    public AdminAuthController(AdminAuthService adminAuthService) {
+//        this.adminAuthService = adminAuthService;
+//    }
+//    @PostMapping("/login")
+//    public ResponseEntity<String> login(@RequestBody LoginRequest request, HttpServletRequest httpRequest) {
+//
+//        System.out.println("Request:"+ request.getUsername() + ", "+request.getPassword() );
+//
+//        boolean isValidUser = adminAuthService.authenticate(request.username, request.password);
+//
+//        if (isValidUser) {
+//            HttpSession session = httpRequest.getSession(true);
+//
+//            session.setAttribute("role", "ADMIN");
+//            session.setAttribute("username", request.username);
+//
+//            return ResponseEntity.ok("Login successful");
+//        } else {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+//        }
+//    }
+//
+//
+//    @PostMapping("/logout")
+//    public ResponseEntity<String> logout(HttpServletRequest httpRequest) {
+//        HttpSession session = httpRequest.getSession(false);
+//        if (session != null) {
+//            session.invalidate();
+//        }
+//        return ResponseEntity.ok("Logged out successfully");
+//    }
+//
+//    public boolean authenticate(String username, String password) {
+//
+//        return "admin@harvard.edu".equals(username) && "admin123".equals(password);
+//    }
+//
+
+
+
 

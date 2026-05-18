@@ -22,17 +22,25 @@ public class AdminCourseController {
     // Helper method to check if Admin is logged in
     private boolean isAdmin(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        return session != null && "ADMIN".equals(session.getAttribute("role"));
+
+        if (session != null) {
+            Object role = session.getAttribute("role");
+            System.out.println("Session ID: " + session.getId() + " | Role: " + role);
+            return "ADMIN".equals(role);
+        }
+
+        System.out.println("No session found for this request.");
+        return false;
     }
 
-    // 1. GET ALL COURSES
+    //  GET ALL COURSES
     @GetMapping
     public ResponseEntity<?> getCourses(HttpServletRequest request) {
         if (!isAdmin(request)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
         return ResponseEntity.ok(courseService.getAllCourses());
     }
 
-    // 2. ADD OR UPDATE COURSE
+    //  ADD OR UPDATE COURSE
     @PostMapping
     public ResponseEntity<String> saveCourse(@RequestBody Course course, HttpServletRequest request) {
         if (!isAdmin(request)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
@@ -41,7 +49,7 @@ public class AdminCourseController {
         return ResponseEntity.ok("Course saved successfully!");
     }
 
-    // 3. DELETE COURSE
+    //  DELETE COURSE
     @DeleteMapping("/{courseId}")
     public ResponseEntity<String> deleteCourse(@PathVariable String courseId, HttpServletRequest request) {
         if (!isAdmin(request)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not logged in");
