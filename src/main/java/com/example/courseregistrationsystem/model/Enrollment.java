@@ -1,8 +1,5 @@
 package com.example.courseregistrationsystem.model;
 
-import java.util.Collection;
-import java.util.Collections;
-
 public class Enrollment {
 
     private String id;
@@ -10,11 +7,6 @@ public class Enrollment {
     private String courseId;
     private String enrolledDate;
     private String createdAt;
-    private String grade;
-    private int marks;
-    private String semester;
-    private String year;
-
 
     public Enrollment(String trim, String trimmed, int i) {
     }
@@ -53,15 +45,6 @@ public class Enrollment {
         }
     }
 
-    public void setGrade(String grade) {
-        this.grade = grade;
-    }
-
-    public String getGrade() {
-        return grade;
-
-    }
-
     public String toFileString() {
 
         return id + "," +
@@ -79,5 +62,3 @@ public class Enrollment {
         return courseId;
     }
 }
-
-

@@ -21,24 +21,24 @@ public class Course {
         this.lecturer=lecturer;
     }
 
-    public static Course fromFileString(
-            String line) {
-
+    public static Course fromFileString(String line) {
         try {
-
             String[] data = line.split(",");
 
-            return new Course(data[0], data[1], data[2], Integer.parseInt(data[3]), data[4], data[5]);
-
+            return new Course(
+                    data[0],
+                    data[1],
+                    Double.parseDouble(data[2]),
+                    data[3],
+                    data[4]
+            );
         } catch (Exception e) {
-
             return null;
         }
     }
 
     public String toFileString() {
-
-        return id + "," + courseName + "," + fee + "," + credits + "," + lecturer + "," ;
+        return id + "," + courseName + "," + fee + "," + credits + "," + lecturer + "," + name + "," + code;
     }
 
     public String getId() {
@@ -66,7 +66,11 @@ public class Course {
     }
 
     public int getCredits() {
-        return 0;
+        try {
+            return Integer.parseInt(credits);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     public String getName() {
@@ -86,6 +90,6 @@ public class Course {
     }
 
     public String getCourseID() {
-        return null;
+        return id;
     }
 }

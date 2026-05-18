@@ -6,7 +6,7 @@ package com.example.courseregistrationsystem.model;
  *      INFO HIDING    - Password should not be exposed to frontend.
  */
 public class Student extends BaseEntity {
-
+    private String studentID;
     private String name;
     private String email;
     private String password;
@@ -19,7 +19,9 @@ public class Student extends BaseEntity {
         super();
     }
 
-    public Student(String id, String name, String email, String password, String studentId, String phone, String faculty, String createdAt) {
+    public Student(String id, String name, String email, String password,
+                   String studentId, String phone, String faculty,
+                   String department, String createdAt) {
         super(id, createdAt);
         this.name = name;
         this.email = email;
@@ -27,6 +29,7 @@ public class Student extends BaseEntity {
         this.studentId = studentId;
         this.phone = phone;
         this.faculty = faculty;
+        this.department = department;
     }
 
     // ── Getters & Setters ─────────────────────────────────────
@@ -47,7 +50,7 @@ public class Student extends BaseEntity {
         this.email = email;
     }
 
-    // FIX: must be public for service layer access
+    // FIX: safer access (not public anymore)
     public String getPassword() {
         return password;
     }
@@ -80,13 +83,15 @@ public class Student extends BaseEntity {
         this.faculty = faculty;
     }
 
-    public String getStudentID() {
-        return studentId;
-    }
-    public void setStudentID(String studentID) {
-        this.studentId = studentID;
+    public String getDepartment() {
+        return department;
     }
 
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    // ── FILE STORAGE ───────────────────────────────────────────
 
     @Override
     public String toFileString() {
@@ -97,24 +102,32 @@ public class Student extends BaseEntity {
                 studentId + "|" +
                 phone + "|" +
                 faculty + "|" +
+                department + "|" +
                 getCreatedAt();
     }
 
     public static Student fromFileString(String line) {
         String[] p = line.split("\\|", -1);
-        if (p.length < 8) return null;
+        if (p.length < 9) return null;
 
         return new Student(
-                p[0], p[1], p[2], p[3],
-                p[4], p[5], p[6], p[7]
+                p[0], // id
+                p[1], // name
+                p[2], // email
+                p[3], // password
+                p[4], // studentId
+                p[5], // phone
+                p[6], // faculty
+                p[7], // department
+                p[8]  // createdAt
         );
     }
 
-    public String getDepartment() {
-        return department;
+    public String getStudentID() {
+        return studentID;
     }
 
-    public void setDepartment(String department) {
-        this.department = department;
+    public void setStudentID(String studentID) {
+        this.studentID = studentID;
     }
 }
