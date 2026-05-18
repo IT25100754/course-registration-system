@@ -1,17 +1,20 @@
 package com.example.courseregistrationsystem.model;
 
-public class Enrollment extends BaseEntity {
+import java.util.Collection;
 
+public class Enrollment {
+
+    private String id;
     private String studentId;
     private String courseId;
     private String enrolledDate;
+    private String createdAt;
+    private String grade;
+    private int marks;
+    private int year;
+    private int semester;
 
-    public Enrollment() {
-        super();
-    }
-    public Enrollment(String id, String studentId, int courseId) {
-        this.studentId = studentId;
-        this.courseId = String.valueOf(courseId);
+    public Enrollment(String trim, String trimmed, int i) {
     }
 
     public Enrollment(String id,
@@ -20,18 +23,27 @@ public class Enrollment extends BaseEntity {
                       String enrolledDate,
                       String createdAt) {
 
-        super.setId(id);
-        super.setCreatedAt(createdAt);
-
+        this.id = id;
         this.studentId = studentId;
         this.courseId = courseId;
         this.enrolledDate = enrolledDate;
+        this.createdAt = createdAt;
     }
 
-    public static Enrollment fromFileString(String line) {
+    public String getGrade() {
+        return grade;
+    }
+
+    public void setGrade(String grade) {
+        this.grade = grade;
+    }
+
+    public static Enrollment fromFileString(
+            String line) {
 
         try {
-            String[] data = line.split("\\|", -1);
+
+            String[] data = line.split(",");
 
             return new Enrollment(
                     data[0],
@@ -42,39 +54,28 @@ public class Enrollment extends BaseEntity {
             );
 
         } catch (Exception e) {
+
             return null;
         }
     }
 
+
     public String toFileString() {
-        return getId() + "|" +
-                studentId + "|" +
-                courseId + "|" +
-                enrolledDate + "|" +
-                getCreatedAt();
+
+        return id + "," +
+                studentId + "," +
+                courseId + "," +
+                enrolledDate + "," +
+                createdAt;
     }
 
     public String getStudentId() {
         return studentId;
     }
 
-    public void setStudentId(String studentId) {
-        this.studentId = studentId;
-    }
-
     public String getCourseId() {
         return courseId;
     }
 
-    public void setCourseId(String courseId) {
-        this.courseId = courseId;
-    }
 
-    public String getEnrolledDate() {
-        return enrolledDate;
-    }
-
-    public void setEnrolledDate(String enrolledDate) {
-        this.enrolledDate = enrolledDate;
-    }
 }

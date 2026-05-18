@@ -2,6 +2,7 @@ package com.example.courseregistrationsystem.service;
 
 
 import com.example.courseregistrationsystem.model.Course;
+import com.example.courseregistrationsystem.model.Grade;
 import com.example.courseregistrationsystem.model.Student;
 import com.example.courseregistrationsystem.repository.CourseRepository;
 import com.example.courseregistrationsystem.repository.StudentRepository;
@@ -41,6 +42,16 @@ public class AdminService {
     public void updateCourse(String id, Course updated) {
         updated.setId(id);
         courseRepo.update(updated);
+    }
+
+    public Object getAllGrades() {
+        return null;
+    }
+
+    public void addGrade(Grade grade) {
+    }
+
+    public void deleteGrade(String id) {
     }
 }
 

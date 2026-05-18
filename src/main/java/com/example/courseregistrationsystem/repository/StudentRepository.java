@@ -120,4 +120,8 @@ public class StudentRepository {
         }
         return String.format("STU%03d", maxNum + 1);
     }
+
+    public List<Student> readStudents() {
+        return null;
+    }
 }
