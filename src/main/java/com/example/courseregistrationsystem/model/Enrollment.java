@@ -1,5 +1,7 @@
 package com.example.courseregistrationsystem.model;
 
+import java.util.Collection;
+
 public class Enrollment {
 
     private String id;
@@ -7,6 +9,10 @@ public class Enrollment {
     private String courseId;
     private String enrolledDate;
     private String createdAt;
+    private String grade;
+    private int marks;
+    private int year;
+    private int semester;
 
     public Enrollment(String trim, String trimmed, int i) {
     }
@@ -22,6 +28,14 @@ public class Enrollment {
         this.courseId = courseId;
         this.enrolledDate = enrolledDate;
         this.createdAt = createdAt;
+    }
+
+    public String getGrade() {
+        return grade;
+    }
+
+    public void setGrade(String grade) {
+        this.grade = grade;
     }
 
     public static Enrollment fromFileString(
@@ -45,6 +59,7 @@ public class Enrollment {
         }
     }
 
+
     public String toFileString() {
 
         return id + "," +
@@ -61,4 +76,6 @@ public class Enrollment {
     public String getCourseId() {
         return courseId;
     }
+
+
 }
