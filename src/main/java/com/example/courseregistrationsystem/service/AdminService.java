@@ -2,6 +2,7 @@ package com.example.courseregistrationsystem.service;
 
 
 import com.example.courseregistrationsystem.model.Course;
+import com.example.courseregistrationsystem.model.Grade;
 import com.example.courseregistrationsystem.model.Student;
 import org.springframework.stereotype.Service;
 
@@ -47,6 +48,16 @@ public class AdminService {
 
     public List<Course> getAllCourses() {
         return courses;
+    }
+
+    public Object getAllGrades() {
+        return null;
+    }
+
+    public void addGrade(Grade grade) {
+    }
+
+    public void deleteGrade(String id) {
     }
 }
 
