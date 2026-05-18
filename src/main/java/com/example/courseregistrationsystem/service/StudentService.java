@@ -5,12 +5,16 @@ import com.example.courseregistrationsystem.model.Student;
 import com.example.courseregistrationsystem.dto.StudentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.example.courseregistrationsystem.repository.StudentRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class StudentService {
+
+    @Autowired
+    private StudentRepository studentRepository;
 
     @Autowired
     private FileStorageService fileStorageService;
@@ -94,28 +98,44 @@ public class StudentService {
     // =========================================================
 
     // LOGIN
+    // LOGIN
     public StudentDTO.ApiResponse login(StudentDTO.LoginRequest req) {
 
-        for (Student s : students) {
+        for (Student s : studentRepository.findAll()) {
+
             if (s.getEmail().equals(req.getEmail())
-                    && s.getPassword().equals(req.getPassword())){
-                return new StudentDTO.ApiResponse(true, "Login successful");
+                    && s.getPassword().equals(req.getPassword())) {
+
+                return new StudentDTO.ApiResponse(
+                        true,
+                        "Login successful",
+                        s
+                );
             }
         }
 
-        return new StudentDTO.ApiResponse(false, "Invalid email or password");
+        return new StudentDTO.ApiResponse(
+                false,
+                "Invalid email or password"
+        );
     }
 
     // REGISTER (DTO version)
     public StudentDTO.ApiResponse register(StudentDTO.RegisterRequest req) {
 
-        for (Student s : students) {
+        for (Student s : studentRepository.findAll()) {
+
             if (s.getEmail().equals(req.getEmail())) {
-                return new StudentDTO.ApiResponse(false, "Email already exists");
+
+                return new StudentDTO.ApiResponse(
+                        false,
+                        "Email already exists"
+                );
             }
         }
 
         Student student = new Student();
+
         student.setName(req.getName());
         student.setEmail(req.getEmail());
         student.setPassword(req.getPassword());
@@ -123,10 +143,12 @@ public class StudentService {
         student.setPhone(req.getPhone());
         student.setDepartment("IT");
 
-        students.add(student);
-        saveStudent(student);
+        studentRepository.save(student);
 
-        return new StudentDTO.ApiResponse(true, "Student registered successfully");
+        return new StudentDTO.ApiResponse(
+                true,
+                "Student registered successfully"
+        );
     }
 
     // RESET PASSWORD
