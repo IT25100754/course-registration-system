@@ -1,40 +1,43 @@
 package com.example.courseregistrationsystem.controller;
 
-import com.example.courseregistrationsystem.model.Enrollment;
-import com.example.courseregistrationsystem.service.GradeService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.courseregistrationsystem.model.Grade;
+import com.example.courseregistrationsystem.service.AdminService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/grades")
-
 public class GradeController {
 
-    @Autowired
-    private GradeService gradeService;
+    private final AdminService adminService;
 
-    // PUT: Updates the grade for a specific student and course
-    @PutMapping("/grade")
-    public ResponseEntity<Enrollment> inputGrade(@RequestBody Enrollment gradeRequest) {
+    public GradeController(AdminService adminService) {
+        this.adminService = adminService;
+    }
 
-        Enrollment updatedEnrollment = gradeService.updateGrade(gradeRequest);
+    @GetMapping
+    public ResponseEntity<?> getGrades(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+        return ResponseEntity.ok(adminService.getAllGrades());
+    }
 
-        if (updatedEnrollment != null) {
-            return ResponseEntity.ok(updatedEnrollment);
-        } else {
-            // Returns a 404 Not Found if the student isn't enrolled in that course
-            return ResponseEntity.notFound().build();
-        }
+    @PostMapping
+    public ResponseEntity<String> addGrade(@RequestBody Grade grade, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+        adminService.addGrade(grade);
+        return ResponseEntity.ok("Grade added successfully");
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteGrade(@PathVariable String id, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+        adminService.deleteGrade(id);
+        return ResponseEntity.ok("Grade deleted");
     }
 }
-
-
-
-
-
-
-
