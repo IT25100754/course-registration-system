@@ -5,12 +5,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class LoginRequest {
 
     public String username;
+    public String email;
     public String password;
 
     public LoginRequest(){}
 
-    public LoginRequest(String username , String password){
+    public LoginRequest(String username , String email,String password){
         this.username=username;
+        this.email=email;
         this.password=password;
     }
 
@@ -31,7 +33,11 @@ public class LoginRequest {
     }
 
     public String getEmail() {
-        return null;
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
 

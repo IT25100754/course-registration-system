@@ -636,4 +636,130 @@ body {
 .content-area {
     flex: 1;
     min-width: 300px;
-}
+}/* REGISTRATION CRUD UI */
+
+ .registration-grid {
+     display: grid;
+     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+     gap: 25px;
+ }
+
+ .registration-card {
+     background: #ffffff;
+     border-radius: 20px;
+     padding: 25px;
+     border: 2px solid #e2e8f0;
+     transition: 0.3s;
+     box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+ }
+
+ .registration-card:hover {
+     transform: translateY(-5px);
+ }
+
+ .selected-course {
+     border: 2px solid #2E8B57;
+     background: #f0fff4;
+ }
+
+ .course-top h3 {
+     color: #1e293b;
+     margin-bottom: 15px;
+     font-size: 22px;
+ }
+
+ .course-details p {
+     margin-bottom: 10px;
+     color: #475569;
+ }
+
+ .course-actions {
+     margin-top: 20px;
+ }
+
+ .cancel-btn {
+     background: #ef4444;
+     color: white;
+     width: 100%;
+ }
+
+ .cancel-btn:hover {
+     background: #dc2626;
+ }
+
+ .registration-next-area {
+     margin-top: 30px;
+     display: flex;
+     justify-content: flex-end;
+ }
+
+ .next-btn {
+     width: 180px;
+ }
+
+ .summary-box {
+     margin-top: 25px;
+     background: #f8fafc;
+     padding: 20px;
+     border-radius: 16px;
+ }
+
+ .summary-box h3 {
+     margin-bottom: 10px;
+     color: #1e293b;
+ }
+
+ .payment-buttons {
+     display: flex;
+     gap: 15px;
+     margin-top: 25px;
+ }
+
+ .payment-card {
+     background: #f8fafc;
+     padding: 30px;
+     border-radius: 20px;
+ }
+
+ .payment-course-item {
+     display: flex;
+     justify-content: space-between;
+     margin: 12px 0;
+     padding: 12px;
+     background: white;
+     border-radius: 12px;
+ }
+
+ .payment-total {
+     margin-top: 20px;
+     font-size: 22px;
+     font-weight: 700;
+     color: #2E8B57;
+ }
+
+ .payment-methods {
+     margin-top: 25px;
+     display: flex;
+     gap: 25px;
+ }
+
+ .success-payment {
+     text-align: center;
+     padding: 60px 20px;
+ }
+
+ .success-payment i {
+     font-size: 80px;
+     color: #2E8B57;
+     margin-bottom: 20px;
+ }
+
+ .success-payment h2 {
+     margin-bottom: 15px;
+     color: #1e293b;
+ }
+
+ .success-payment p {
+     margin-bottom: 30px;
+     color: #64748b;
+ }
