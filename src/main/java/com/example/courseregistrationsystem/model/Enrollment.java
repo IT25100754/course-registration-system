@@ -21,13 +21,17 @@ public class Enrollment {
                       String studentId,
                       String courseId,
                       String enrolledDate,
-                      String createdAt) {
+                      String createdAt
+   ) {
 
         this.id = id;
         this.studentId = studentId;
         this.courseId = courseId;
         this.enrolledDate = enrolledDate;
         this.createdAt = createdAt;
+        this.grade=grade;
+        this.year=year;
+        this.semester=semester;
     }
 
     public String getGrade() {
@@ -51,6 +55,7 @@ public class Enrollment {
                     data[2],
                     data[3],
                     data[4]
+
             );
 
         } catch (Exception e) {
