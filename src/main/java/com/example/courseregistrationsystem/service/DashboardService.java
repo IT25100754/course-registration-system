@@ -26,7 +26,6 @@ public class DashboardService {
         seedSampleData();
     }
 
-    // ================= LOAD METHODS =================
 
     private List<Course> loadCourses() {
 
@@ -56,7 +55,6 @@ public class DashboardService {
                 .toList();
     }
 
-    // ================= SAVE METHODS =================
 
     private void saveEnrollments(List<Enrollment> enrollments) {
 
@@ -67,7 +65,6 @@ public class DashboardService {
         fileStorage.writeLines(ENROLLMENTS_FILE, lines);
     }
 
-    // ================= UTILITY METHODS =================
 
     private String now() {
 
@@ -85,7 +82,6 @@ public class DashboardService {
         return 2.0;
     }
 
-    // ================= SAMPLE DATA =================
 
     private void seedSampleData() {
 
