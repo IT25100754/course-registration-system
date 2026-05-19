@@ -17,8 +17,7 @@ public class Enrollment {
     public Enrollment(String trim, String trimmed, int i) {
     }
 
-    public Enrollment(String id,
-                      String studentId,
+    public Enrollment(String id, String studentId,
                       String courseId,
                       String enrolledDate,
                       String createdAt) {
