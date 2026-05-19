@@ -698,9 +698,7 @@ function showDashboardSection(section, event) {
               let totalAmount = 0;
 
               selectedCourses.forEach(course => {
-
                   totalAmount += course.price;
-
               });
 
               container.innerHTML = `
@@ -714,103 +712,251 @@ function showDashboardSection(section, event) {
                   <h3>Registered Courses Summary</h3>
 
                   <div class="payment-course-list">
-
                       ${selectedCourses.map(course => `
-
                           <div class="payment-course-item">
-
                               <span>${course.name}</span>
-
-                              <strong>
-                                  LKR ${course.price}
-                              </strong>
-
+                              <strong>LKR ${course.price}</strong>
                           </div>
-
                       `).join('')}
-
                   </div>
 
                   <div class="payment-total">
-
-                      Total Amount :
-                      <strong>LKR ${totalAmount}</strong>
-
+                      Total Amount : <strong>LKR ${totalAmount}</strong>
                   </div>
 
                   <div class="payment-methods">
-
                       <label>
-                          <input type="radio"
-                              name="paymentMethod"
-                              checked>
-
+                          <input type="radio" name="paymentMethod" value="cash" id="radioCash" checked
+                              onchange="toggleOnlineForm()">
                           Cash Payment
                       </label>
-
                       <label>
-                          <input type="radio"
-                              name="paymentMethod">
-
+                          <input type="radio" name="paymentMethod" value="online" id="radioOnline"
+                              onchange="toggleOnlineForm()">
                           Online Payment
                       </label>
+                  </div>
+
+                  <!-- Online Payment Form (hidden by default) -->
+                  <div id="onlinePaymentForm" style="display:none; margin-top:20px; border-top:1px solid #334155; padding-top:20px;">
+
+                      <h3 style="margin-bottom:16px;">💳 Enter Card Details</h3>
+
+                      <div class="form-group">
+                          <label>Card Holder Name</label>
+                          <input type="text" id="cardHolderName" placeholder="e.g. John Harvard" maxlength="60">
+                          <small id="err-cardHolderName" style="color:#f87171; display:none;">Please enter card holder name.</small>
+                      </div>
+
+                      <div class="form-group">
+                          <label>Card Number</label>
+                          <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19"
+                              oninput="formatCardNumber(this)">
+                          <small id="err-cardNumber" style="color:#f87171; display:none;">Enter a valid 16-digit card number.</small>
+                      </div>
+
+                      <div style="display:flex; gap:16px;">
+                          <div class="form-group" style="flex:1;">
+                              <label>Expiry Date</label>
+                              <input type="text" id="expiryDate" placeholder="MM/YY" maxlength="5"
+                                  oninput="formatExpiry(this)">
+                              <small id="err-expiryDate" style="color:#f87171; display:none;">Enter a valid future expiry date.</small>
+                          </div>
+                          <div class="form-group" style="flex:1;">
+                              <label>CVV</label>
+                              <input type="password" id="cvv" placeholder="123" maxlength="4">
+                              <small id="err-cvv" style="color:#f87171; display:none;">CVV must be 3 or 4 digits.</small>
+                          </div>
+                      </div>
+
+                      <div class="form-group">
+                          <label>Payment Amount (LKR)</label>
+                          <input type="number" id="paymentAmount" value="${totalAmount}" min="1">
+                          <small id="err-paymentAmount" style="color:#f87171; display:none;">Amount must be greater than 0.</small>
+                      </div>
 
                   </div>
 
-                  <div class="payment-buttons">
-
-                      <button class="btn cancel-btn"
-                          onclick="showRegisteredCoursesPage()">
-
+                  <div class="payment-buttons" style="margin-top:20px;">
+                      <button class="btn cancel-btn" onclick="showRegisteredCoursesPage()">
                           Cancel Payment
-
                       </button>
-
-                      <button class="btn btn-primary"
-                          onclick="completePayment()">
-
+                      <button class="btn btn-primary" onclick="completePayment(${totalAmount})">
                           Confirm Payment
-
                       </button>
-
                   </div>
 
               </div>
-
               `;
           };
 
-          window.completePayment = function() {
+          // Show/hide the online payment form based on selected radio
+          window.toggleOnlineForm = function() {
+              const isOnline = document.getElementById('radioOnline').checked;
+              document.getElementById('onlinePaymentForm').style.display = isOnline ? 'block' : 'none';
+          };
 
-              showToast(
-                  '✅ Payment completed successfully!',
-                  true
-              );
+          // Auto-format card number: groups of 4 digits separated by spaces
+          window.formatCardNumber = function(input) {
+              let val = input.value.replace(/\D/g, '').substring(0, 16);
+              input.value = val.replace(/(.{4})/g, '$1 ').trim();
+          };
 
-              container.innerHTML = `
+          // Auto-format expiry: MM/YY
+          window.formatExpiry = function(input) {
+              let val = input.value.replace(/\D/g, '').substring(0, 4);
+              if (val.length >= 3) val = val.substring(0, 2) + '/' + val.substring(2);
+              input.value = val;
+          };
 
-              <div class="success-payment">
+          window.completePayment = function(totalAmount) {
 
-                  <i class="fas fa-check-circle"></i>
+              const isOnline = document.getElementById('radioOnline') &&
+                               document.getElementById('radioOnline').checked;
 
-                  <h2>
-                      Payment Successful
-                  </h2>
+              if (isOnline) {
+                  // --- Validate online payment fields ---
+                  let valid = true;
 
-                  <p>
-                      Your courses have been registered successfully.
-                  </p>
+                  const cardHolderName = document.getElementById('cardHolderName').value.trim();
+                  const cardNumber     = document.getElementById('cardNumber').value.replace(/\s/g, '');
+                  const expiryDate     = document.getElementById('expiryDate').value.trim();
+                  const cvv            = document.getElementById('cvv').value.trim();
+                  const paymentAmount  = parseFloat(document.getElementById('paymentAmount').value);
 
-                  <button class="btn btn-primary"
-                      onclick="renderRegistrationPage()">
+                  // Hide all errors first
+                  ['cardHolderName','cardNumber','expiryDate','cvv','paymentAmount'].forEach(id => {
+                      document.getElementById('err-' + id).style.display = 'none';
+                  });
 
-                      Back to Registration
+                  // Validate name
+                  if (!cardHolderName) {
+                      document.getElementById('err-cardHolderName').style.display = 'block';
+                      valid = false;
+                  }
 
-                  </button>
+                  // Validate card number (must be exactly 16 digits)
+                  if (!/^\d{16}$/.test(cardNumber)) {
+                      document.getElementById('err-cardNumber').style.display = 'block';
+                      valid = false;
+                  }
 
-              </div>
+                  // Validate expiry date (MM/YY format, must not be in the past)
+                  const expiryMatch = expiryDate.match(/^(\d{2})\/(\d{2})$/);
+                  if (!expiryMatch) {
+                      document.getElementById('err-expiryDate').style.display = 'block';
+                      valid = false;
+                  } else {
+                      const expMonth = parseInt(expiryMatch[1], 10);
+                      const expYear  = parseInt('20' + expiryMatch[2], 10);
+                      const now      = new Date();
+                      const nowYear  = now.getFullYear();
+                      const nowMonth = now.getMonth() + 1;
+                      if (expMonth < 1 || expMonth > 12 ||
+                          expYear < nowYear ||
+                          (expYear === nowYear && expMonth < nowMonth)) {
+                          document.getElementById('err-expiryDate').style.display = 'block';
+                          valid = false;
+                      }
+                  }
 
-              `;
+                  // Validate CVV (3 or 4 digits)
+                  if (!/^\d{3,4}$/.test(cvv)) {
+                      document.getElementById('err-cvv').style.display = 'block';
+                      valid = false;
+                  }
+
+                  // Validate amount
+                  if (isNaN(paymentAmount) || paymentAmount <= 0) {
+                      document.getElementById('err-paymentAmount').style.display = 'block';
+                      valid = false;
+                  }
+
+                  if (!valid) {
+                      showToast('Please fix the errors in the payment form.', false);
+                      return;
+                  }
+
+                  // --- Save online payment to localStorage ---
+                  const onlinePayments = JSON.parse(localStorage.getItem('onlinePayments')) || [];
+                  const paymentRecord = {
+                      id:             'ONL-' + Date.now(),
+                      studentId:      currentUser.studentId,
+                      cardHolderName: cardHolderName,
+                      cardNumberLast4: cardNumber.slice(-4),
+                      expiryDate:     expiryDate,
+                      amount:         paymentAmount,
+                      method:         'ONLINE',
+                      status:         'COMPLETED',
+                      paidAt:         new Date().toISOString(),
+                      transactionRef: 'TXN-' + Math.random().toString(36).substring(2, 10).toUpperCase()
+                  };
+                  onlinePayments.push(paymentRecord);
+                  localStorage.setItem('onlinePayments', JSON.stringify(onlinePayments));
+
+                  // Clear selected courses after successful payment
+                  selectedCourses = [];
+                  localStorage.removeItem('selectedCourses');
+
+                  showToast('✅ Online payment successful!', true);
+
+                  // Show online payment success page
+                  container.innerHTML = `
+                  <div class="success-payment">
+                      <i class="fas fa-check-circle" style="color:#22c55e; font-size:64px; margin-bottom:16px;"></i>
+                      <h2>Payment Successful!</h2>
+                      <p>Your online payment has been processed successfully.</p>
+
+                      <div style="background:#1e293b; border:1px solid #334155; border-radius:12px; padding:20px; margin:24px auto; max-width:400px; text-align:left;">
+                          <h3 style="margin-bottom:12px; color:#94a3b8; font-size:14px; text-transform:uppercase; letter-spacing:1px;">Payment Receipt</h3>
+                          <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #334155;">
+                              <span style="color:#94a3b8;">Transaction ID</span>
+                              <strong>${paymentRecord.transactionRef}</strong>
+                          </div>
+                          <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #334155;">
+                              <span style="color:#94a3b8;">Card Holder</span>
+                              <strong>${cardHolderName}</strong>
+                          </div>
+                          <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #334155;">
+                              <span style="color:#94a3b8;">Card Number</span>
+                              <strong>**** **** **** ${paymentRecord.cardNumberLast4}</strong>
+                          </div>
+                          <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #334155;">
+                              <span style="color:#94a3b8;">Amount Paid</span>
+                              <strong style="color:#22c55e;">LKR ${paymentAmount.toLocaleString()}</strong>
+                          </div>
+                          <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #334155;">
+                              <span style="color:#94a3b8;">Payment Method</span>
+                              <strong>Online (Card)</strong>
+                          </div>
+                          <div style="display:flex; justify-content:space-between; padding:8px 0;">
+                              <span style="color:#94a3b8;">Status</span>
+                              <strong style="color:#22c55e;">✅ COMPLETED</strong>
+                          </div>
+                      </div>
+
+                      <button class="btn btn-primary" onclick="renderRegistrationPage()" style="margin-top:8px;">
+                          Back to Registration
+                      </button>
+                  </div>
+                  `;
+
+              } else {
+                  // --- Cash Payment flow (unchanged) ---
+                  showToast('✅ Cash payment initiated! Please visit the Finance Office.', true);
+
+                  container.innerHTML = `
+                  <div class="success-payment">
+                      <i class="fas fa-check-circle"></i>
+                      <h2>Payment Successful</h2>
+                      <p>Your courses have been registered successfully.</p>
+                      <p style="color:#94a3b8; font-size:14px;">Please visit the Finance Office to complete your cash payment.</p>
+                      <button class="btn btn-primary" onclick="renderRegistrationPage()">
+                          Back to Registration
+                      </button>
+                  </div>
+                  `;
+              }
           };
 
           renderRegistrationPage();
