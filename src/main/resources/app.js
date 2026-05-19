@@ -8,6 +8,93 @@ let userWidgets = JSON.parse(localStorage.getItem('userWidgets')) || {};
 
 let currentUser = null;
 
+// ============================================================
+// VALIDATION HELPER FUNCTIONS
+// ============================================================
+
+const VALIDATION = {
+    EMAIL_REGEX:    /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    PASSWORD_REGEX: /^(?=.*[!@#$%^&*(),.?":{}|<>]).{5,}$/,
+    PHONE_REGEX:    /^\+94(7[0-9]{8})$/
+};
+
+function validateEmail(email) {
+    if (!email.trim()) return 'Email is required';
+    if (!VALIDATION.EMAIL_REGEX.test(email.trim())) return 'Please enter a valid email address';
+    return null;
+}
+
+function validatePassword(password) {
+    if (!password) return 'Password is required';
+    if (!VALIDATION.PASSWORD_REGEX.test(password)) {
+        return 'Password must be at least 5 characters and contain at least 1 special character';
+    }
+    return null;
+}
+
+function validateSriLankanPhone(phone) {
+    if (!phone.trim()) return 'Phone number is required';
+    if (!VALIDATION.PHONE_REGEX.test(phone.trim())) {
+        return 'Please enter a valid Sri Lankan phone number';
+    }
+    return null;
+}
+
+// Show inline error below a field
+function showFieldError(fieldId, message) {
+    const field = document.getElementById(fieldId);
+    if (!field) return;
+    field.classList.add('input-error');
+    let errEl = document.getElementById(fieldId + '_error');
+    if (!errEl) {
+        errEl = document.createElement('div');
+        errEl.id = fieldId + '_error';
+        errEl.className = 'field-error-msg';
+        field.parentNode.appendChild(errEl);
+    }
+    errEl.textContent = message;
+    errEl.style.display = 'block';
+}
+
+// Clear inline error from a field
+function clearFieldError(fieldId) {
+    const field = document.getElementById(fieldId);
+    if (!field) return;
+    field.classList.remove('input-error');
+    const errEl = document.getElementById(fieldId + '_error');
+    if (errEl) errEl.style.display = 'none';
+}
+
+// Attach real-time clearing on input
+function attachLiveValidation(fieldId, validatorFn) {
+    const field = document.getElementById(fieldId);
+    if (!field) return;
+    field.addEventListener('input', () => {
+        const err = validatorFn(field.value);
+        if (err) showFieldError(fieldId, err);
+        else clearFieldError(fieldId);
+    });
+}
+
+// Enforce +94 prefix on a phone input
+function enforcePhonePrefix(fieldId) {
+    const field = document.getElementById(fieldId);
+    if (!field) return;
+    if (!field.value) field.value = '+94';
+    field.addEventListener('input', () => {
+        if (!field.value.startsWith('+94')) {
+            const digits = field.value.replace(/[^0-9]/g, '');
+            field.value = '+94' + digits;
+        }
+    });
+    field.addEventListener('keydown', (e) => {
+        // Prevent deleting the +94 prefix
+        if (field.value.length <= 3 && (e.key === 'Backspace' || e.key === 'Delete')) {
+            e.preventDefault();
+        }
+    });
+}
+
 const WIDGET_TYPES = {
     ENROLLED_COURSES: 'enrolledCourses',
     GPA: 'gpa',
@@ -115,71 +202,47 @@ function showForgotPassword() {
     document.getElementById('forgotPasswordSection').style.display = 'flex';
 }
 
-function resetPassword() {
-    const email = document.getElementById('forgotEmail').value;
-    const newPassword = document.getElementById('newPasswordReset').value;
-    const confirmPassword = document.getElementById('confirmPasswordReset').value;
-    if (!email || !newPassword || !confirmPassword) return showToast('Please fill all fields', false);
-    if (newPassword !== confirmPassword) return showToast('Passwords do not match', false);
-    if (newPassword.length < 4) return showToast('Password must be at least 4 characters', false);
-    const student = students.find(s => s.email === email);
-    if (!student) return showToast('Email not found', false);
-    student.password = newPassword;
-    localStorage.setItem('students', JSON.stringify(students));
-    showToast('Password reset successfully! Please login.', true);
-    showLogin();
-}
+// (Duplicate local resetPassword removed — async version at bottom handles this)
 
 async function handleLogin() {
-
-    const email = document.getElementById('loginEmail').value;
+    const email    = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value;
 
-    if (!email || !password) {
-        return showToast('Please enter email and password', false);
-    }
+    // --- Inline validation ---
+    let hasError = false;
+    const emailErr = validateEmail(email);
+    if (emailErr) { showFieldError('loginEmail', emailErr); hasError = true; }
+    else clearFieldError('loginEmail');
+
+    const pwErr = validatePassword(password);
+    if (pwErr) { showFieldError('loginPassword', pwErr); hasError = true; }
+    else clearFieldError('loginPassword');
+
+    if (hasError) return;
 
     try {
-
         const response = await fetch(
             'http://localhost:8080/api/auth/login',
             {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    email: email,
-                    password: password
-                })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
             }
         );
 
         const data = await response.json();
 
         if (data.success) {
-
             currentUser = data.data;
 
             if (!userWidgets[currentUser.studentId]) {
-
                 userWidgets[currentUser.studentId] = [
-                    'enrolledCourses',
-                    'gpa',
-                    'totalCredits',
-                    'averageScore'
+                    'enrolledCourses', 'gpa', 'totalCredits', 'averageScore'
                 ];
-
-                localStorage.setItem(
-                    'userWidgets',
-                    JSON.stringify(userWidgets)
-                );
+                localStorage.setItem('userWidgets', JSON.stringify(userWidgets));
             }
 
-            showToast(
-                `✨ Welcome back ${currentUser.name}!`,
-                true
-            );
+            showToast(`✨ Welcome back ${currentUser.name}!`, true);
 
             document.getElementById('homeSection').style.display = 'none';
             document.getElementById('loginSection').style.display = 'none';
@@ -189,68 +252,64 @@ async function handleLogin() {
 
             updateSidebarInfo();
             renderDashboard();
-
         } else {
-
             showToast(data.message, false);
         }
-
     } catch (error) {
-
         console.log(error);
         showToast('Backend server not running', false);
     }
 }
 
 async function handleRegister() {
+    const name      = document.getElementById('regName').value.trim();
+    const email     = document.getElementById('regEmail').value.trim();
+    const studentId = document.getElementById('regStudentId').value.trim();
+    const phone     = document.getElementById('regPhone').value.trim();
+    const password  = document.getElementById('regPassword').value;
 
-    const name = document.getElementById('regName').value;
-    const email = document.getElementById('regEmail').value;
-    const studentId = document.getElementById('regStudentId').value;
-    const phone = document.getElementById('regPhone').value;
-    const password = document.getElementById('regPassword').value;
+    // --- Inline validation ---
+    let hasError = false;
 
-    if (!name || !email || !studentId || !password) {
-        return showToast('Please fill all required fields', false);
-    }
+    if (!name) { showFieldError('regName', 'Full name is required'); hasError = true; }
+    else clearFieldError('regName');
+
+    const emailErr = validateEmail(email);
+    if (emailErr) { showFieldError('regEmail', emailErr); hasError = true; }
+    else clearFieldError('regEmail');
+
+    if (!studentId) { showFieldError('regStudentId', 'Student ID is required'); hasError = true; }
+    else clearFieldError('regStudentId');
+
+    const phoneErr = validateSriLankanPhone(phone);
+    if (phoneErr) { showFieldError('regPhone', phoneErr); hasError = true; }
+    else clearFieldError('regPhone');
+
+    const pwErr = validatePassword(password);
+    if (pwErr) { showFieldError('regPassword', pwErr); hasError = true; }
+    else clearFieldError('regPassword');
+
+    if (hasError) return;
 
     try {
-
         const response = await fetch(
             'http://localhost:8080/api/auth/register',
             {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    name,
-                    email,
-                    studentId,
-                    phone,
-                    password
-                })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, studentId, phone, password })
             }
         );
 
         const data = await response.json();
 
         if (data.success) {
-
-            showToast(
-                '✅ Account created successfully!',
-                true
-            );
-
+            showToast('✅ Account created successfully! Please login.', true);
             showLogin();
-
         } else {
-
             showToast(data.message, false);
         }
-
     } catch (error) {
-
         console.log(error);
         showToast('Cannot connect to backend', false);
     }
@@ -368,7 +427,50 @@ function showDashboardSection(section, event) {
         const studentGrades = grades.filter(g => g.studentId === currentUser.studentId);
         container.innerHTML = `<h2 class="section-title">📈 My Grades</h2><table class="performance-table"><thead><tr><th>Course</th><th>Marks</th><th>Grade</th><th>Status</th></tr></thead><tbody>${studentGrades.map(g => { const c = courses.find(c => c.id === g.courseId); const status = g.marks >= 60 ? 'Passed' : 'Failed'; return `<tr><td><strong>${c?.name}</strong><br><small>${c?.code}</small></td><td>${g.marks}</td><td><span class="badge badge-success">${g.grade}</span></td><td>${status}</td></tr>`; }).join('') || '<tr><td colspan="4">No grades available</td></tr>'}</tbody></table>`;
     } else if (section === 'profile') {
-        container.innerHTML = `<h2 class="section-title">👤 My Profile</h2><div class="profile-card"><div class="info-row"><span class="info-label">Full Name:</span><span class="info-value"><strong>${currentUser.name}</strong></span></div><div class="info-row"><span class="info-label">Email Address:</span><span class="info-value">${currentUser.email}</span></div><div class="info-row"><span class="info-label">Student ID:</span><span class="info-value">${currentUser.studentId}</span></div><div class="info-row"><span class="info-label">Faculty:</span><span class="info-value"><span class="badge badge-success">Harvard Faculty of Computing</span></span></div><div class="info-row"><span class="info-label">Phone Number:</span><span class="info-value">${currentUser.phone || 'Not provided'}</span></div></div><div class="phone-section"><h3><i class="fas fa-phone"></i> Change Phone Number</h3><div class="form-group"><input type="tel" id="newPhoneNumber" placeholder="New phone number"></div><button class="btn btn-primary" onclick="changePhone()">Update Phone</button></div><div class="password-section"><h3><i class="fas fa-lock"></i> Change Password</h3><div class="form-group"><input type="password" id="currentPassword" placeholder="Current password"></div><div class="form-group"><input type="password" id="newPassword" placeholder="New password"></div><div class="form-group"><input type="password" id="confirmPassword" placeholder="Confirm password"></div><button class="btn btn-primary" onclick="changePassword()">Change Password</button></div>`;
+        container.innerHTML = `
+            <h2 class="section-title">👤 My Profile</h2>
+            <div class="profile-card">
+                <div class="info-row"><span class="info-label">Full Name:</span><span class="info-value"><strong>${currentUser.name}</strong></span></div>
+                <div class="info-row"><span class="info-label">Email Address:</span><span class="info-value">${currentUser.email}</span></div>
+                <div class="info-row"><span class="info-label">Student ID:</span><span class="info-value">${currentUser.studentId}</span></div>
+                <div class="info-row"><span class="info-label">Faculty:</span><span class="info-value"><span class="badge badge-success">Harvard Faculty of Computing</span></span></div>
+                <div class="info-row"><span class="info-label">Phone Number:</span><span class="info-value">${currentUser.phone || 'Not provided'}</span></div>
+            </div>
+
+            <div class="phone-section">
+                <h3><i class="fas fa-phone"></i> Change Phone Number</h3>
+                <div class="form-group">
+                    <label>Sri Lankan Phone (+94)</label>
+                    <input type="tel" id="newPhoneNumber" placeholder="+94771234567" value="+94">
+                    <div id="newPhoneNumber_error" class="field-error-msg" style="display:none;"></div>
+                </div>
+                <button class="btn btn-primary" onclick="changePhone()">Update Phone</button>
+            </div>
+
+            <div class="password-section">
+                <h3><i class="fas fa-lock"></i> Change Password</h3>
+                <div class="form-group">
+                    <label>Current Password</label>
+                    <input type="password" id="currentPassword" placeholder="Current password">
+                    <div id="currentPassword_error" class="field-error-msg" style="display:none;"></div>
+                </div>
+                <div class="form-group">
+                    <label>New Password</label>
+                    <input type="password" id="newPassword" placeholder="Min 5 chars + 1 special char">
+                    <div id="newPassword_error" class="field-error-msg" style="display:none;"></div>
+                </div>
+                <div class="form-group">
+                    <label>Confirm New Password</label>
+                    <input type="password" id="confirmPassword" placeholder="Repeat new password">
+                    <div id="confirmPassword_error" class="field-error-msg" style="display:none;"></div>
+                </div>
+                <button class="btn btn-primary" onclick="changePassword()">Change Password</button>
+            </div>
+        `;
+        // Enforce +94 prefix on phone input
+        enforcePhonePrefix('newPhoneNumber');
+        attachLiveValidation('newPhoneNumber', validateSriLankanPhone);
+        attachLiveValidation('newPassword', validatePassword);
     } else if (section === 'registration') {
 
           const registrationCourses = [
@@ -833,61 +935,123 @@ function registerCourse(courseId) {
 }
 
 function changePhone() {
-    const newPhone = document.getElementById('newPhoneNumber')?.value;
-    if (!newPhone) return showToast('Enter phone number', false);
+    const newPhone = document.getElementById('newPhoneNumber')?.value.trim();
+
+    // Validate Sri Lankan phone
+    const phoneErr = validateSriLankanPhone(newPhone || '');
+    if (phoneErr) {
+        showFieldError('newPhoneNumber', phoneErr);
+        return;
+    }
+    clearFieldError('newPhoneNumber');
+
     currentUser.phone = newPhone;
     const idx = students.findIndex(s => s.id === currentUser.id);
     if (idx !== -1) students[idx].phone = newPhone;
     localStorage.setItem('students', JSON.stringify(students));
-    showToast('Phone updated!', true);
+    showToast('✅ Phone number updated successfully!', true);
+    showDashboardSection('profile', null);
+}
+
+function changePassword() {
+    const currentPw  = document.getElementById('currentPassword')?.value;
+    const newPw      = document.getElementById('newPassword')?.value;
+    const confirmPw  = document.getElementById('confirmPassword')?.value;
+
+    let hasError = false;
+
+    // Required: current password
+    if (!currentPw || !currentPw.trim()) {
+        showFieldError('currentPassword', 'All fields are required');
+        hasError = true;
+    } else {
+        clearFieldError('currentPassword');
+    }
+
+    // New password format
+    const pwErr = validatePassword(newPw || '');
+    if (pwErr) {
+        showFieldError('newPassword', pwErr);
+        hasError = true;
+    } else {
+        clearFieldError('newPassword');
+    }
+
+    // Confirm password match
+    if (!confirmPw || !confirmPw.trim()) {
+        showFieldError('confirmPassword', 'All fields are required');
+        hasError = true;
+    } else if (newPw !== confirmPw) {
+        showFieldError('confirmPassword', 'Passwords do not match');
+        hasError = true;
+    } else {
+        clearFieldError('confirmPassword');
+    }
+
+    if (hasError) return;
+
+    // Verify current password matches stored password
+    if (currentUser.password && currentPw !== currentUser.password) {
+        showFieldError('currentPassword', 'Current password is incorrect');
+        return;
+    }
+
+    // All valid — update password
+    currentUser.password = newPw;
+    const idx = students.findIndex(s => s.id === currentUser.id);
+    if (idx !== -1) students[idx].password = newPw;
+    localStorage.setItem('students', JSON.stringify(students));
+    showToast('✅ Password changed successfully!', true);
     showDashboardSection('profile', null);
 }
 
 async function resetPassword() {
-
-    const email = document.getElementById('forgotEmail').value;
-    const newPassword = document.getElementById('newPasswordReset').value;
+    const email           = document.getElementById('forgotEmail').value.trim();
+    const newPassword     = document.getElementById('newPasswordReset').value;
     const confirmPassword = document.getElementById('confirmPasswordReset').value;
 
-    if (!email || !newPassword || !confirmPassword) {
-        return showToast('Please fill all fields', false);
+    // --- Inline validation ---
+    let hasError = false;
+
+    const emailErr = validateEmail(email);
+    if (emailErr) { showFieldError('forgotEmail', emailErr); hasError = true; }
+    else clearFieldError('forgotEmail');
+
+    const pwErr = validatePassword(newPassword);
+    if (pwErr) { showFieldError('newPasswordReset', pwErr); hasError = true; }
+    else clearFieldError('newPasswordReset');
+
+    if (!confirmPassword) {
+        showFieldError('confirmPasswordReset', 'All fields are required');
+        hasError = true;
+    } else if (newPassword !== confirmPassword) {
+        showFieldError('confirmPasswordReset', 'Passwords do not match');
+        hasError = true;
+    } else {
+        clearFieldError('confirmPasswordReset');
     }
 
-    if (newPassword !== confirmPassword) {
-        return showToast('Passwords do not match', false);
-    }
+    if (hasError) return;
 
     try {
-
         const response = await fetch(
             'http://localhost:8080/api/auth/reset-password',
             {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    email: email,
-                    newPassword: newPassword,
-                    confirmPassword: confirmPassword
-
-                })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, newPassword, confirmPassword })
             }
         );
 
         const data = await response.json();
 
         if (data.success) {
-
-            showToast('Password reset successful!', true);
+            showToast('✅ Password reset successful! Please login.', true);
             showLogin();
-
         } else {
             showToast(data.message, false);
         }
-
     } catch (error) {
-
         console.log(error);
         showToast('Cannot connect to backend', false);
     }

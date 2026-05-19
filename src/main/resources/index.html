@@ -43,15 +43,17 @@
                 <div class="form-group">
                     <label>Email Address</label>
                     <input type="email" id="loginEmail" placeholder="student@harvard.edu">
+                    <div id="loginEmail_error" class="field-error-msg" style="display:none;"></div>
                 </div>
                 <div class="form-group">
                     <label>Password</label>
                     <input type="password" id="loginPassword" placeholder="••••••">
+                    <div id="loginPassword_error" class="field-error-msg" style="display:none;"></div>
                 </div>
                 <div class="forgot-link">
                     <span onclick="showForgotPassword()"><i class="fas fa-key"></i> Forgot Password?</span>
                 </div>
-                <button class="btn btn-primary" onclick="handleLogin()">Login</button>
+                <button class="btn btn-primary" id="loginBtn" onclick="handleLogin()">Login</button>
                 <div class="switch-link">
                     Don't have an account? <span onclick="showRegisterFromLogin()">Register here</span>
                 </div>
@@ -70,24 +72,29 @@
                 <div class="form-group">
                     <label>Full Name</label>
                     <input type="text" id="regName" placeholder="John Harvard">
+                    <div id="regName_error" class="field-error-msg" style="display:none;"></div>
                 </div>
                 <div class="form-group">
                     <label>Email</label>
                     <input type="email" id="regEmail" placeholder="student@harvard.edu">
+                    <div id="regEmail_error" class="field-error-msg" style="display:none;"></div>
                 </div>
                 <div class="form-group">
                     <label>Student ID</label>
                     <input type="text" id="regStudentId" placeholder="HARVARD001">
+                    <div id="regStudentId_error" class="field-error-msg" style="display:none;"></div>
                 </div>
                 <div class="form-group">
-                    <label>Phone Number</label>
-                    <input type="tel" id="regPhone" placeholder="+1 234 567 8900">
+                    <label>Phone Number <small>(Sri Lanka +94)</small></label>
+                    <input type="tel" id="regPhone" placeholder="+94771234567" value="+94">
+                    <div id="regPhone_error" class="field-error-msg" style="display:none;"></div>
                 </div>
                 <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="regPassword" placeholder="••••••">
+                    <label>Password <small>(min 5 chars + 1 special char)</small></label>
+                    <input type="password" id="regPassword" placeholder="e.g. pass@1">
+                    <div id="regPassword_error" class="field-error-msg" style="display:none;"></div>
                 </div>
-                <button class="btn btn-primary" onclick="handleRegister()">Register</button>
+                <button class="btn btn-primary" id="registerBtn" onclick="handleRegister()">Register</button>
                 <div class="switch-link">
                     Already have an account? <span onclick="showLoginFromRegister()">Login here</span>
                 </div>
@@ -106,14 +113,17 @@
                 <div class="form-group">
                     <label>Email Address</label>
                     <input type="email" id="forgotEmail" placeholder="student@harvard.edu">
+                    <div id="forgotEmail_error" class="field-error-msg" style="display:none;"></div>
                 </div>
                 <div class="form-group">
-                    <label>New Password</label>
+                    <label>New Password <small>(min 5 chars + 1 special char)</small></label>
                     <input type="password" id="newPasswordReset" placeholder="Enter new password">
+                    <div id="newPasswordReset_error" class="field-error-msg" style="display:none;"></div>
                 </div>
                 <div class="form-group">
                     <label>Confirm New Password</label>
                     <input type="password" id="confirmPasswordReset" placeholder="Confirm new password">
+                    <div id="confirmPasswordReset_error" class="field-error-msg" style="display:none;"></div>
                 </div>
                 <button class="btn btn-primary" onclick="resetPassword()">Reset Password</button>
                 <div class="switch-link">
@@ -162,5 +172,31 @@
 </div>
 
 <script src="app.js"></script>
+<script>
+    // Attach live validation to static-DOM auth form fields on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        // Login form
+        attachLiveValidation('loginEmail', validateEmail);
+        attachLiveValidation('loginPassword', validatePassword);
+
+        // Register form
+        attachLiveValidation('regName', v => (!v.trim() ? 'Full name is required' : null));
+        attachLiveValidation('regEmail', validateEmail);
+        attachLiveValidation('regStudentId', v => (!v.trim() ? 'Student ID is required' : null));
+        attachLiveValidation('regPhone', validateSriLankanPhone);
+        attachLiveValidation('regPassword', validatePassword);
+        enforcePhonePrefix('regPhone');
+
+        // Forgot password form
+        attachLiveValidation('forgotEmail', validateEmail);
+        attachLiveValidation('newPasswordReset', validatePassword);
+        attachLiveValidation('confirmPasswordReset', v => {
+            const newPw = document.getElementById('newPasswordReset')?.value;
+            if (!v) return 'All fields are required';
+            if (v !== newPw) return 'Passwords do not match';
+            return null;
+        });
+    });
+</script>
 </body>
 </html>
