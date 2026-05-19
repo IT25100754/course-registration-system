@@ -370,10 +370,451 @@ function showDashboardSection(section, event) {
     } else if (section === 'profile') {
         container.innerHTML = `<h2 class="section-title">👤 My Profile</h2><div class="profile-card"><div class="info-row"><span class="info-label">Full Name:</span><span class="info-value"><strong>${currentUser.name}</strong></span></div><div class="info-row"><span class="info-label">Email Address:</span><span class="info-value">${currentUser.email}</span></div><div class="info-row"><span class="info-label">Student ID:</span><span class="info-value">${currentUser.studentId}</span></div><div class="info-row"><span class="info-label">Faculty:</span><span class="info-value"><span class="badge badge-success">Harvard Faculty of Computing</span></span></div><div class="info-row"><span class="info-label">Phone Number:</span><span class="info-value">${currentUser.phone || 'Not provided'}</span></div></div><div class="phone-section"><h3><i class="fas fa-phone"></i> Change Phone Number</h3><div class="form-group"><input type="tel" id="newPhoneNumber" placeholder="New phone number"></div><button class="btn btn-primary" onclick="changePhone()">Update Phone</button></div><div class="password-section"><h3><i class="fas fa-lock"></i> Change Password</h3><div class="form-group"><input type="password" id="currentPassword" placeholder="Current password"></div><div class="form-group"><input type="password" id="newPassword" placeholder="New password"></div><div class="form-group"><input type="password" id="confirmPassword" placeholder="Confirm password"></div><button class="btn btn-primary" onclick="changePassword()">Change Password</button></div>`;
     } else if (section === 'registration') {
-        const available = courses.filter(c => !enrollments.some(e => e.studentId === currentUser.studentId && e.courseId === c.id));
-        container.innerHTML = `<h2 class="section-title">📌 Course Registration</h2><div class="widgets-grid">${available.map(c => `<div class="widget-card"><h3>${c.name}</h3><p><strong>Code:</strong> ${c.code}</p><p><strong>Credits:</strong> ${c.credits}</p><button class="btn btn-primary" onclick="registerCourse('${c.id}')">Register</button></div>`).join('') || '<p>No available courses</p>'}</div><hr><h3>📝 My Notes (CRUD)</h3><div class="add-form"><input type="text" id="noteTitle" placeholder="Title"><input type="text" id="noteContent" placeholder="Content"><button class="btn btn-primary" onclick="addNote()">+ Add Note</button></div><div id="notesList"></div>`;
-        renderNotes();
-    }
+
+          const registrationCourses = [
+              {
+                  id: "CS101",
+                  name: "Java Programming",
+                  code: "CS101",
+                  credits: 4,
+                  price: 9500
+              },
+              {
+                  id: "CS102",
+                  name: "Python for Beginners",
+                  code: "CS102",
+                  credits: 3,
+                  price: 8500
+              },
+              {
+                  id: "CS103",
+                  name: "Web Development Fundamentals",
+                  code: "CS103",
+                  credits: 4,
+                  price: 10000
+              },
+              {
+                  id: "CS104",
+                  name: "Full Stack Development",
+                  code: "CS104",
+                  credits: 4,
+                  price: 9800
+              },
+              {
+                  id: "CS105",
+                  name: "Mobile App Development",
+                  code: "CS105",
+                  credits: 3,
+                  price: 8700
+              },
+              {
+                  id: "CS106",
+                  name: "Object-Oriented Programming",
+                  code: "CS106",
+                  credits: 4,
+                  price: 9200
+              }
+          ];
+
+          let selectedCourses = JSON.parse(
+              localStorage.getItem("selectedCourses")
+          ) || [];
+
+          function saveSelectedCourses() {
+
+              localStorage.setItem(
+                  "selectedCourses",
+                  JSON.stringify(selectedCourses)
+              );
+          }
+
+          function renderRegistrationPage() {
+
+              container.innerHTML = `
+
+              <h2 class="section-title">
+                  📌 Course Registration
+              </h2>
+
+              <div class="registration-grid">
+
+                  ${registrationCourses.map(course => {
+
+                      const isSelected = selectedCourses.some(
+                          c => c.id === course.id
+                      );
+
+                      return `
+
+                      <div class="registration-card ${isSelected ? 'selected-course' : ''}">
+
+                          <div class="course-top">
+                              <h3>${course.name}</h3>
+                          </div>
+
+                          <div class="course-details">
+                              <p><strong>Course Code:</strong> ${course.code}</p>
+                              <p><strong>Credits:</strong> ${course.credits}</p>
+                              <p><strong>Price:</strong> LKR ${course.price}</p>
+                          </div>
+
+                          <div class="course-actions">
+
+                              ${
+                                  !isSelected
+                                  ?
+                                  `<button class="btn btn-primary"
+                                      onclick="registerSelectedCourse('${course.id}')">
+                                      Register
+                                  </button>`
+                                  :
+                                  `<button class="btn cancel-btn"
+                                      onclick="cancelSelectedCourse('${course.id}')">
+                                      Cancel
+                                  </button>`
+                              }
+
+                          </div>
+
+                      </div>
+
+                      `;
+
+                  }).join('')}
+
+              </div>
+
+              <div class="registration-next-area">
+
+                  <button class="btn btn-primary next-btn"
+                      onclick="showRegisteredCoursesPage()">
+
+                      Next
+
+                  </button>
+
+              </div>
+
+              `;
+          }
+
+          window.registerSelectedCourse = function(courseId) {
+
+              const course = registrationCourses.find(
+                  c => c.id === courseId
+              );
+
+              if (!selectedCourses.some(c => c.id === courseId)) {
+
+                  selectedCourses.push(course);
+
+                  saveSelectedCourses();
+
+                  showToast(
+                      `${course.name} registered successfully!`,
+                      true
+                  );
+
+                  renderRegistrationPage();
+              }
+          };
+
+          window.cancelSelectedCourse = function(courseId) {
+
+              selectedCourses = selectedCourses.filter(
+                  c => c.id !== courseId
+              );
+
+              saveSelectedCourses();
+
+              showToast(
+                  'Course removed successfully!',
+                  true
+              );
+
+              renderRegistrationPage();
+          };
+
+          window.showRegisteredCoursesPage = function() {
+
+              if (selectedCourses.length === 0) {
+
+                  showToast(
+                      'Please register at least one course',
+                      false
+                  );
+
+                  return;
+              }
+
+              let totalCredits = 0;
+              let totalAmount = 0;
+
+              selectedCourses.forEach(course => {
+
+                  totalCredits += course.credits;
+                  totalAmount += course.price;
+              });
+
+              container.innerHTML = `
+
+              <h2 class="section-title">
+                  📚 Registered Courses Management
+              </h2>
+
+              <table class="performance-table">
+
+                  <thead>
+                      <tr>
+                          <th>Course</th>
+                          <th>Code</th>
+                          <th>Credits</th>
+                          <th>Price</th>
+                          <th>Actions</th>
+                      </tr>
+                  </thead>
+
+                  <tbody>
+
+                      ${selectedCourses.map(course => `
+
+                          <tr>
+
+                              <td>${course.name}</td>
+                              <td>${course.code}</td>
+                              <td>${course.credits}</td>
+                              <td>LKR ${course.price}</td>
+
+                              <td>
+
+                                  <div class="action-buttons">
+
+                                      <button class="btn-icon btn-edit"
+                                          onclick="updateCourse('${course.id}')">
+
+                                          Edit
+
+                                      </button>
+
+                                      <button class="btn-icon btn-delete"
+                                          onclick="removeCourse('${course.id}')">
+
+                                          Remove
+
+                                      </button>
+
+                                  </div>
+
+                              </td>
+
+                          </tr>
+
+                      `).join('')}
+
+                  </tbody>
+
+              </table>
+
+              <div class="summary-box">
+
+                  <h3>Total Credits: ${totalCredits}</h3>
+
+                  <h3>Total Payment: LKR ${totalAmount}</h3>
+
+              </div>
+
+              <div class="payment-buttons">
+
+                  <button class="btn cancel-btn"
+                      onclick="renderRegistrationPage()">
+
+                      Back
+
+                  </button>
+
+                  <button class="btn btn-primary"
+                      onclick="showPaymentPage()">
+
+                      Confirm Payment
+
+                  </button>
+
+              </div>
+
+              `;
+          };
+
+          window.updateCourse = function(courseId) {
+
+              const course = selectedCourses.find(
+                  c => c.id === courseId
+              );
+
+              const updatedCredits = prompt(
+                  'Update Credits (Max 4)',
+                  course.credits
+              );
+
+              if (updatedCredits > 4) {
+
+                  showToast(
+                      'Credits cannot exceed 4',
+                      false
+                  );
+
+                  return;
+              }
+
+              course.credits = Number(updatedCredits);
+
+              saveSelectedCourses();
+
+              showToast(
+                  'Course updated successfully!',
+                  true
+              );
+
+              showRegisteredCoursesPage();
+          };
+
+          window.removeCourse = function(courseId) {
+
+              selectedCourses = selectedCourses.filter(
+                  c => c.id !== courseId
+              );
+
+              saveSelectedCourses();
+
+              showToast(
+                  'Course removed successfully!',
+                  true
+              );
+
+              showRegisteredCoursesPage();
+          };
+
+          window.showPaymentPage = function() {
+
+              let totalAmount = 0;
+
+              selectedCourses.forEach(course => {
+
+                  totalAmount += course.price;
+
+              });
+
+              container.innerHTML = `
+
+              <h2 class="section-title">
+                  💳 Payment Confirmation
+              </h2>
+
+              <div class="payment-card">
+
+                  <h3>Registered Courses Summary</h3>
+
+                  <div class="payment-course-list">
+
+                      ${selectedCourses.map(course => `
+
+                          <div class="payment-course-item">
+
+                              <span>${course.name}</span>
+
+                              <strong>
+                                  LKR ${course.price}
+                              </strong>
+
+                          </div>
+
+                      `).join('')}
+
+                  </div>
+
+                  <div class="payment-total">
+
+                      Total Amount :
+                      <strong>LKR ${totalAmount}</strong>
+
+                  </div>
+
+                  <div class="payment-methods">
+
+                      <label>
+                          <input type="radio"
+                              name="paymentMethod"
+                              checked>
+
+                          Cash Payment
+                      </label>
+
+                      <label>
+                          <input type="radio"
+                              name="paymentMethod">
+
+                          Online Payment
+                      </label>
+
+                  </div>
+
+                  <div class="payment-buttons">
+
+                      <button class="btn cancel-btn"
+                          onclick="showRegisteredCoursesPage()">
+
+                          Cancel Payment
+
+                      </button>
+
+                      <button class="btn btn-primary"
+                          onclick="completePayment()">
+
+                          Confirm Payment
+
+                      </button>
+
+                  </div>
+
+              </div>
+
+              `;
+          };
+
+          window.completePayment = function() {
+
+              showToast(
+                  '✅ Payment completed successfully!',
+                  true
+              );
+
+              container.innerHTML = `
+
+              <div class="success-payment">
+
+                  <i class="fas fa-check-circle"></i>
+
+                  <h2>
+                      Payment Successful
+                  </h2>
+
+                  <p>
+                      Your courses have been registered successfully.
+                  </p>
+
+                  <button class="btn btn-primary"
+                      onclick="renderRegistrationPage()">
+
+                      Back to Registration
+
+                  </button>
+
+              </div>
+
+              `;
+          };
+
+          renderRegistrationPage();
+      }
 }
 
 function unregisterCourse(courseId) {
