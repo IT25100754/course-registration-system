@@ -36,26 +36,29 @@ public class AdminAuthService {
                     adminList.add(new Admin(username, email, password));
                 }
             }
+            this.admins=adminList;
+            System.out.println("SUCCESS : Loaded " + admins.size() +"admin(s) from file .");
         } catch (IOException e) {
             System.out.println("Error reading admin file: " + e.getMessage());
         }
 
-        admins.addAll(adminList);
-        System.out.println("admin users are added from file");
+        //admins.addAll(adminList);
+       // System.out.println("admin users are added from file");
     }
 
     public boolean authenticate(String username, String password) {
-        boolean authenticate = false;
+        //boolean authenticate = false;
         System.out.println(admins);
 
         for(Admin admin: admins) {
 
             if(admin.getName().equals(username) && admin.getPassword().equals(password)){
-                authenticate = true;
-                break;
+                ///authenticate = true;
+                //break;
+                return true;
             }
         }
-        return authenticate;
+        return false;
     }
 
 }

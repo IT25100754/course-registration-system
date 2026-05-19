@@ -5,6 +5,7 @@ import com.example.courseregistrationsystem.model.Course;
 import com.example.courseregistrationsystem.model.Grade;
 import com.example.courseregistrationsystem.model.Student;
 import com.example.courseregistrationsystem.repository.CourseRepository;
+import com.example.courseregistrationsystem.repository.GradeRepository;
 import com.example.courseregistrationsystem.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,9 @@ public class AdminService {
     private StudentRepository studentRepo;
     @Autowired
     private CourseRepository courseRepo;
+
+    @Autowired
+    private GradeRepository gradeRepository;
 
     public void addStudent(Student student) {
         studentRepo.save(student);
@@ -44,15 +48,18 @@ public class AdminService {
         courseRepo.update(updated);
     }
 
-    public Object getAllGrades() {
-        return null;
+    public List<Grade> getAllGrades() {
+
+        return gradeRepository.findAll();
     }
 
     public void addGrade(Grade grade) {
+        gradeRepository.save(grade);
 
     }
 
     public void deleteGrade(String id) {
+        System.out.println("Delete a grade" + id);
 
     }
 }

@@ -10,6 +10,10 @@ public class Course {
     private String name;
     private String code;
 
+    public Course(){
+
+    }
+
     public Course(String datum, String s, String string, int i, String datum1, String s1) {
     }
 
