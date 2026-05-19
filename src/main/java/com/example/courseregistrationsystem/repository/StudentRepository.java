@@ -15,9 +15,6 @@ public class StudentRepository {
     @Autowired
     private com.example.courseregistrationsystem.repository.FileHandler fileHandler;
 
-    // ================================================================
-    //  CREATE - Save a new student to students.txt
-    // ================================================================
 
 
     public void save(Student student) {
@@ -27,9 +24,7 @@ public class StudentRepository {
         );
     }
 
-    // ================================================================
-    //  READ - Load all students from students.txt
-    // ================================================================
+
 
 
     public List<Student> findAll() {
@@ -58,9 +53,6 @@ public class StudentRepository {
                 .findFirst();
     }
 
-    // ================================================================
-    //  UPDATE - Modify an existing student record in students.txt
-    // ================================================================
 
 
     public boolean update(Student updatedStudent) {
@@ -83,9 +75,6 @@ public class StudentRepository {
         return found;
     }
 
-    // ================================================================
-    //  DELETE - Remove a student from students.txt
-    // ================================================================
 
 
     public boolean deleteById(String studentID) {

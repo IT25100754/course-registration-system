@@ -25,7 +25,7 @@ public class StudentService {
     private final List<Course> registeredCourses =
             new ArrayList<>();
 
-    // ================= REGISTER COURSE =================
+
 
     public void registerCourse(Course course) {
         registeredCourses.add(course);
@@ -35,7 +35,7 @@ public class StudentService {
         return registeredCourses;
     }
 
-    // ================= SAVE STUDENT =================
+
 
     public void saveStudent(Student student) {
 
@@ -51,7 +51,7 @@ public class StudentService {
         );
     }
 
-    // ================= ADD STUDENT =================
+
 
     public Student registerStudent(Student student) {
         students.add(student);
@@ -59,13 +59,13 @@ public class StudentService {
         return student;
     }
 
-    // ================= GET ALL STUDENTS =================
+
 
     public List<Student> getAllStudents() {
         return students;
     }
 
-    // ================= UPDATE STUDENT =================
+
 
     public Student editStudent(String id, Student updatedStudent) {
 
@@ -84,7 +84,7 @@ public class StudentService {
         return null;
     }
 
-    // ================= DELETE STUDENT =================
+
 
     public boolean removeStudent(String id) {
 
@@ -93,12 +93,7 @@ public class StudentService {
         );
     }
 
-    // =========================================================
-    // ✅ DTO SUPPORT METHODS (ADDED - DO NOT CHANGE ABOVE CODE)
-    // =========================================================
 
-    // LOGIN
-    // LOGIN
     public StudentDTO.ApiResponse login(StudentDTO.LoginRequest req) {
 
         for (Student s : studentRepository.findAll()) {
@@ -120,7 +115,7 @@ public class StudentService {
         );
     }
 
-    // REGISTER (DTO version)
+
     public StudentDTO.ApiResponse register(StudentDTO.RegisterRequest req) {
 
         for (Student s : studentRepository.findAll()) {
@@ -151,7 +146,7 @@ public class StudentService {
         );
     }
 
-    // RESET PASSWORD
+
     public StudentDTO.ApiResponse resetPassword(StudentDTO.ResetPasswordRequest req) {
 
         for (Student s : students) {
@@ -170,7 +165,7 @@ public class StudentService {
         return new StudentDTO.ApiResponse(false, "Email not found");
     }
 
-    // GET PROFILE
+
     public Student getProfile(String studentId) {
 
         for (Student s : students) {
@@ -182,7 +177,7 @@ public class StudentService {
         return null;
     }
 
-    // UPDATE PHONE
+
     public boolean updatePhone(String studentId, String phone) {
 
         for (Student s : students) {
@@ -195,7 +190,7 @@ public class StudentService {
         return false;
     }
 
-    // CHANGE PASSWORD
+
     public boolean changePassword(String studentId, String newPassword) {
 
         for (Student s : students) {

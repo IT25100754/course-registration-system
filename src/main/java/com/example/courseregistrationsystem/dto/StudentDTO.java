@@ -3,9 +3,6 @@ package com.example.courseregistrationsystem.dto;
 
     public class StudentDTO {
 
-        // ══════════════════════════════════════════════════════════════════════════
-        // 1. LOGIN REQUEST
-        // ══════════════════════════════════════════════════════════════════════════
         public static class LoginRequest {
             private String email;
             private String password;
@@ -16,9 +13,7 @@ package com.example.courseregistrationsystem.dto;
             public void   setPassword(String pwd)    { this.password = pwd; }
         }
 
-        // ══════════════════════════════════════════════════════════════════════════
-        // 2. REGISTER REQUEST
-        // ══════════════════════════════════════════════════════════════════════════
+
         public static class RegisterRequest {
             private String name;
             private String email;
@@ -38,9 +33,7 @@ package com.example.courseregistrationsystem.dto;
             public void   setPhone(String ph)        { this.phone = ph; }
         }
 
-        // ══════════════════════════════════════════════════════════════════════════
-        // 3. PROFILE RESPONSE  (password excluded — Information Hiding)
-        // ══════════════════════════════════════════════════════════════════════════
+
         public static class ProfileResponse {
             private String id;
             private String name;
@@ -52,7 +45,7 @@ package com.example.courseregistrationsystem.dto;
             private boolean success;
             private String message;
 
-            // getters & setters
+
             public String  getId()                   { return id; }
             public void    setId(String id)          { this.id = id; }
             public String  getName()                 { return name; }
@@ -73,9 +66,6 @@ package com.example.courseregistrationsystem.dto;
             public void    setMessage(String m)      { this.message = m; }
         }
 
-        // ══════════════════════════════════════════════════════════════════════════
-        // 4. GENERIC API RESPONSE
-        // ══════════════════════════════════════════════════════════════════════════
         public static class ApiResponse {
             private boolean success;
             private String  message;
@@ -100,9 +90,6 @@ package com.example.courseregistrationsystem.dto;
             public void    setData(Object d)        { this.data = d; }
         }
 
-        // ══════════════════════════════════════════════════════════════════════════
-        // 5. UPDATE PHONE REQUEST
-        // ══════════════════════════════════════════════════════════════════════════
         public static class UpdatePhoneRequest {
             private String studentId;
             private String phone;
@@ -113,9 +100,6 @@ package com.example.courseregistrationsystem.dto;
             public void   setPhone(String p)         { this.phone = p; }
         }
 
-        // ══════════════════════════════════════════════════════════════════════════
-        // 6. CHANGE PASSWORD REQUEST
-        // ══════════════════════════════════════════════════════════════════════════
         public static class ChangePasswordRequest {
             private String studentId;
             private String currentPassword;
@@ -132,9 +116,6 @@ package com.example.courseregistrationsystem.dto;
             public void   setConfirmPassword(String cf)     { this.confirmPassword = cf; }
         }
 
-        // ══════════════════════════════════════════════════════════════════════════
-        // 7. RESET PASSWORD REQUEST (Forgot Password)
-        // ══════════════════════════════════════════════════════════════════════════
         public static class ResetPasswordRequest {
             private String email;
             private String newPassword;
@@ -148,9 +129,6 @@ package com.example.courseregistrationsystem.dto;
             public void   setConfirmPassword(String c)      { this.confirmPassword = c; }
         }
 
-        // ══════════════════════════════════════════════════════════════════════════
-        // 8. DASHBOARD DATA RESPONSE
-        // ══════════════════════════════════════════════════════════════════════════
         public static class DashboardResponse {
             private String studentName;
             private String studentId;
@@ -178,7 +156,7 @@ package com.example.courseregistrationsystem.dto;
             public java.util.List<GradeInfo> getGrades()              { return grades; }
             public void    setGrades(java.util.List<GradeInfo> g)     { this.grades = g; }
 
-            // Nested: grade row shown in the dashboard performance table
+
             public static class GradeInfo {
                 private String courseName;
                 private String courseCode;

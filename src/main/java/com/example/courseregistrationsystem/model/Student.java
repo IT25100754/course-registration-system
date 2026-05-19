@@ -1,10 +1,5 @@
 package com.example.courseregistrationsystem.model;
 
-/**
- * OOP: INHERITANCE    - Extends BaseEntity to reuse id, createdAt fields.
- *      ENCAPSULATION  - All fields private; only exposed via getters/setters.
- *      INFO HIDING    - Password should not be exposed to frontend.
- */
 public class Student extends BaseEntity {
     private String studentID;
     private String name;
@@ -32,7 +27,6 @@ public class Student extends BaseEntity {
         this.department = department;
     }
 
-    // ── Getters & Setters ─────────────────────────────────────
 
     public String getName() {
         return name;
@@ -50,7 +44,7 @@ public class Student extends BaseEntity {
         this.email = email;
     }
 
-    // FIX: safer access (not public anymore)
+
     public String getPassword() {
         return password;
     }
@@ -91,7 +85,7 @@ public class Student extends BaseEntity {
         this.department = department;
     }
 
-    // ── FILE STORAGE ───────────────────────────────────────────
+
 
     @Override
     public String toFileString() {
@@ -111,15 +105,15 @@ public class Student extends BaseEntity {
         if (p.length < 9) return null;
 
         return new Student(
-                p[0], // id
-                p[1], // name
-                p[2], // email
-                p[3], // password
-                p[4], // studentId
-                p[5], // phone
-                p[6], // faculty
-                p[7], // department
-                p[8]  // createdAt
+                p[0],
+                p[1],
+                p[2],
+                p[3],
+                p[4],
+                p[5],
+                p[6],
+                p[7],
+                p[8]
         );
     }
 

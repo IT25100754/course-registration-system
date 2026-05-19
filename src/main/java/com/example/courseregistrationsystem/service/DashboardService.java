@@ -143,7 +143,6 @@ public class DashboardService {
         }
     }
 
-    // ================= DASHBOARD =================
 
     public StudentDTO.DashboardResponse getDashboardData(
             String studentId) {
@@ -273,7 +272,6 @@ public class DashboardService {
         return res;
     }
 
-    // ================= COURSE METHODS =================
 
     public List<Course> getAvailableCourses(
             String studentId) {
@@ -307,7 +305,6 @@ public class DashboardService {
                 .collect(Collectors.toList());
     }
 
-    // ================= REGISTER =================
 
     public StudentDTO.ApiResponse registerCourse(
             String studentId,
@@ -352,7 +349,6 @@ public class DashboardService {
         );
     }
 
-    // ================= UNREGISTER =================
 
     public StudentDTO.ApiResponse unregisterCourse(
             String studentId,
@@ -387,17 +383,15 @@ public class DashboardService {
         );
     }
 
-    // ================= GRADES =================
+    public List<Grade> getGrades(String studentId) {
 
-//    public List<Grade> getGrades(
-//            String studentId) {
-//
-//        return loadGrades().stream()
-//                .filter(g -> g.getStudentId())
-//                .collect(Collectors.toList());
-//    }
+        return loadGrades().stream()
+                .filter(g -> g.getStudentId()
+                        .equalsIgnoreCase(studentId))
+                .collect(Collectors.toList());
+    }
 
-    // ================= ALL COURSES =================
+
 
     public List<Course> getAllCourses() {
 
